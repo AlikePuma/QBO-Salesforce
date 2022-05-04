@@ -31,7 +31,6 @@ public class QBInvoiceJSON {
 		public String Description;
 		public String DetailType;
 		public SalesItemLineDetail SalesItemLineDetail;
-		public LinkedTxn SubTotalLineDetail;
 	}
 
 	public class BillAddr {
