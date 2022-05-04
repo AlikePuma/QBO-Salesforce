@@ -27,7 +27,6 @@ public with sharing class QBCustomerSync_Controller {
     }
 
     public Pagereference syncQB(){
-        
         QBCallout callout = new QBCallout();
         QBCustomerJSON accountData = callout.getCustomer(acc);
 
@@ -67,5 +66,4 @@ public with sharing class QBCustomerSync_Controller {
         Long startTime = DateTime.now().getTime();
         while(DateTime.now().getTime()-startTime<3000);
     }
-    
 }

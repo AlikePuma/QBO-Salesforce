@@ -50,119 +50,215 @@ public class QBMap {
         return JSON.serialize(customer, True).replace('"Long_x":', '"Long":');
     }
 
+    public static String mapProductsToBatchItems(List<QBProductAndWoliWrapper> wrappers){
+        QBBatchRequestJSON batch;
+
+        // Ensure list not empty
+        if(wrappers.size() > 0){
+            batch = new QBBatchRequestJSON();
+            
+            QBItemJSON item;
+
+            for(QBProductAndWoliWrapper w : wrappers){
+                // instantiate and update QBBatchRequestJSON.BatchItemRequest class
+                QBBatchRequestJSON.BatchItemRequest bir = new QBBatchRequestJSON.BatchItemRequest();
+                bir.bid         = String.valueOf(w.product.Id);
+                bir.operation   = 'create';
+
+                // instantiate item class
+                item = new QBItemJSON();
+                item.TrackQtyOnHand     = false;
+                item.Name               = w.product.Name + ' x13';
+                item.UnitPrice          = w.woli.UnitPrice;
+                item.Taxable            = true;
+                item.Type               = 'NonInventory';
+                item.IncomeAccountRef = new QBItemJSON.IncomeAccountRef();
+                item.IncomeAccountRef.name      = 'Checking'; // change these to match prod
+                item.IncomeAccountRef.value     = '35';
+                
+                bir.Item = item;
+                
+                batch.BatchItemRequest.add(bir);
+            }
+        }
+        String payload = JSON.serialize(batch, true);
+        System.debug(payload);
+        return payload;
+    }
+
     /**
      * Map an invoice from Salesforce to QBO JSON
      * @param inv The invoice that is used for the mapping
      * @return The json String that is used for the body of the request callout 
      */
-    public static String mapInvoice(Invoice__c inv){
-        //Initialize invoice object
-        QBInvoiceJSON invoiceObj = new QBInvoiceJSON();
+    public static String mapInvoice(Invoice__c inv, List<WorkOrderLineItem> woliList){
 
-        //Initialize line items for invoice mapping
-        QBInvoiceJSON.Line line = new QBInvoiceJSON.Line();
-        QBInvoiceJSON.SalesItemLineDetail detail = new QBInvoiceJSON.SalesItemLineDetail();
-        invoiceObj.Line = new List<QBInvoiceJSON.Line>();
+        //////////////////////////
+        // INVOICE TOP LEVEL ITEMS
+        //////////////////////////
+
+        //Initialize invoice object
+        QBInvoiceJSON invoiceObj = new QBInvoiceJSON();   
         
-        //map line item fields
-        line.Amount = inv.Total__c;
-        //@todo unhardcode this
-        line.DetailType = 'SalesItemLineDetail';
         invoiceObj.Id = inv.QBO_Id__c;
         invoiceObj.SyncToken = inv.QBO_SyncToken__c;
-        invoiceObj.DueDate = inv.Due_Date__c;
+        
         invoiceObj.AllowOnlineACHPayment = True;
         invoiceObj.AllowOnlineCreditCardPayment = True;
         String invNumber = inv.name.replace('INV-', '');
         invoiceObj.DocNumber  = invNumber;
         invoiceObj.EmailStatus = 'NotSet';
         QBInvoiceJSON.EmailAddress email = new QBInvoiceJSON.EmailAddress();
-        email.Address = inv.Opportunity__r.Account.contact__r.email;
+        email.Address = inv.Work_Order__r.Account.contact__r.email;
         invoiceObj.BillEmail = email;
 
+        //*****  CUSTOMER REFERENCE  *****//
         QBInvoiceJSON.CustomerRef customerRef = new QBInvoiceJSON.CustomerRef();
-        customerRef.value = inv.Opportunity__r.Account.QBO_Id__c;
+        customerRef.value = inv.Work_Order__r.Account.QBO_Id__c;
         invoiceObj.CustomerRef = customerRef;
         
-        //Map description
-        QBInvoiceJSON.MemoRef memoRef = new QBInvoiceJSON.MemoRef();
-        memoRef.value = inv.Description__c;
-        invoiceObj.CustomerMemo = memoRef;
+        //*****  MEMO  *****//
+        QBInvoiceJSON.MemoRef memo = new QBInvoiceJSON.MemoRef();
+        memo.value = inv.Description__c;
+        invoiceObj.CustomerMemo = memo;
+
+        //*****  TERMS & DUE DATE  *****//
         QBInvoiceJSON.SalesTermRef sales = new QBInvoiceJSON.SalesTermRef();
         //these values are different for each QB org
+        
+
+        Integer daysToAddToDueDate = 0;
         if(inv.Terms__c == 'Due on receipt'){
-            sales.value = '6';
+            sales.value = '1';
+            daysToAddToDueDate = 0;
+        }else if(inv.Terms__c == 'Net 10'){
+            sales.value = '5';
+            daysToAddToDueDate = 10;
         }else if(inv.Terms__c == 'Net 15'){
-            sales.value = '7';
+            sales.value = '2';
+            daysToAddToDueDate = 15;
         }else if(inv.Terms__c == 'Net 30'){
-            sales.value = '8';
+            sales.value = '3';
+            daysToAddToDueDate = 30;
         }else{
-            sales.value = '9';
+            sales.value = '4';
+            daysToAddToDueDate = 60;
         }
+        invoiceObj.DueDate = Date.today().addDays(daysToAddToDueDate);
         invoiceObj.SalesTermRef = sales;
         
-        //Create Billing Address
+        //*****  BILLING ADDRESS  *****//
         QBInvoiceJSON.BillAddr billAddy = new QBInvoiceJSON.BillAddr();
-        billAddy.City = inv.Opportunity__r.Account.BillingCity;
-        billAddy.Line1 = inv.Opportunity__r.Account.BillingStreet;
-        billAddy.CountrySubDivisionCode = inv.Opportunity__r.Account.BillingState;
-        billAddy.PostalCode = inv.Opportunity__r.Account.BillingPostalCode;
-        billAddy.Country = inv.Opportunity__r.Account.BillingCountry;
+        billAddy.City = inv.Work_Order__r.Account.BillingCity;
+        billAddy.Line1 = inv.Work_Order__r.Account.Name;
+        billAddy.Line2 = inv.Work_Order__r.Account.BillingStreet;
+        billAddy.CountrySubDivisionCode = inv.Work_Order__r.Account.BillingState;
+        billAddy.PostalCode = inv.Work_Order__r.Account.BillingPostalCode;
+        billAddy.Country = inv.Work_Order__r.Account.BillingCountry;
         invoiceObj.BillAddr = billAddy;
 
-        //Create Shipping Address
+        //*****  SHIPPING ADDRESS  *****//
         QBInvoiceJSON.BillAddr shipAddy = new QBInvoiceJSON.BillAddr();
-        if(inv.Opportunity__r.Account != null){
+        if(inv.Work_Order__r.Account != null){
             String phone = '';
             String cName = '';
 
-            if(inv.Opportunity__r.Account != null){
-                cName = inv.Opportunity__r.Account.Name;
-
-            }
-            if(inv.Opportunity__r.Account.Contact__c != null){
-                cName = inv.Opportunity__r.Account.Contact__r.Name;
+            if(inv.Work_Order__r.Account.Contact__c != null){
+                cName = inv.Work_Order__r.Account.Contact__r.Name;
+            } else {
+                cName = 'ATTN: Billing';
             }
             String contactLine = cName + phone;
 
-            shipAddy.Line1 = inv.Opportunity__r.Account.Name;
-            shipAddy.Line2 = contactLine ;
-            shipAddy.Line3 = inv.Opportunity__r.Account.ShippingStreet;
-            //shipAddy.City = inv.Opportunity__r.Account.ShippingCity;
+            shipAddy.Line1 = inv.Work_Order__r.Account.Name;
+            shipAddy.Line2 = contactLine;
+            shipAddy.Line3 = inv.Work_Order__r.Account.ShippingStreet;
+            shipAddy.Line4 = inv.Work_Order__r.Account.ShippingCity + ', '+ 
+                               inv.Work_Order__r.Account.ShippingState + '  ' +
+                               inv.Work_Order__r.Account.ShippingPostalCode;
+            shipAddy.Line5 = inv.Work_Order__r.Account.ShippingCountry;
 
-            shipAddy.Line4 = inv.Opportunity__r.Account.ShippingCity + ', '+ 
-                               inv.Opportunity__r.Account.ShippingState + '  ' +
-                               inv.Opportunity__r.Account.ShippingPostalCode + '\n';
-            //shipAddy.CountrySubDivisionCode = inv.Opportunity__r.Account.ShippingState;
-            ///shipAddy.PostalCode = inv.Opportunity__r.Account.ShippingPostalCode;
-            shipAddy.Lat = String.valueOf(inv.Opportunity__r.Account.ShippingLatitude);
-            shipAddy.Long_x = String.valueOf(inv.Opportunity__r.Account.ShippingLongitude);
+            shipAddy.Lat = String.valueOf(inv.Work_Order__r.Account.ShippingLatitude);
+            shipAddy.Long_x = String.valueOf(inv.Work_Order__r.Account.ShippingLongitude);
             invoiceObj.ShipAddr = shipAddy;
         }
 
-        //map line detail fields
-        QBInvoiceJSON.ItemRef itemRef = new QBInvoiceJSON.ItemRef();
-        //Pull this from QB instance
-        //Map to 1 product
-        //@todo unhardcode this
-        itemRef.name = 'Sales';//Sandbox: 'Services';
-        itemRef.value = '25'; //Sandbox: '19'; Prod '1'
         
-        detail.ItemRef = itemRef;
+        //////////////////////////
+        // INVOICE LINE ITEMS
+        //////////////////////////
 
-        //map taxable status for an invoice
-        detail.TaxCodeRef = new QBInvoiceJSON.ItemRef();
-        detail.TaxCodeRef.value = 'TAX';
-        detail.Qty = 1;
-        detail.UnitPrice = 2;
-        line.SalesItemLineDetail = detail;
+        //Initialize line items for invoice mapping
+        QBInvoiceJSON.SalesItemLineDetail salesItemLineDetail;
+        List<QBInvoiceJSON.Line> lineItems = new List<QBInvoiceJSON.Line>(); // refers to the list in parent class
+        QBInvoiceJSON.Line line; // refers to the sub class
 
-        invoiceObj.Line.add(line);
+        for(WorkOrderLineItem woli : woliList){
+            System.debug(woli);
 
+            line = new QBInvoiceJSON.Line(); 
+
+            salesItemLineDetail = new QBInvoiceJSON.SalesItemLineDetail();
+            QBInvoiceJSON.ItemRef itemRef = new QBInvoiceJSON.ItemRef();
+            // Pull this from QB instance, 
+            // this is the product/service (or Item) required for an invoice line item
+            
+            itemRef.name = 'Product';
+            itemRef.value = '21'; 
+            salesItemLineDetail.ItemRef = itemRef;
+
+            // set line item details
+            salesItemLineDetail.TaxCodeRef          = new QBInvoiceJSON.ItemRef();
+            salesItemLineDetail.TaxCodeRef.value    = 'TAX';
+            salesItemLineDetail.Qty                 = woli.Quantity.setScale(2);
+            salesItemLineDetail.UnitPrice           = woli.UnitPrice.setScale(2);
+            line.SalesItemLineDetail = salesItemLineDetail;
+
+            System.debug('Quantity: ' + salesItemLineDetail.Qty);
+            System.debug('UnitPrice: ' + salesItemLineDetail.UnitPrice);
+
+            // Set line parent vars
+            line.Amount = (salesItemLineDetail.Qty  * salesItemLineDetail.UnitPrice).setScale(2);
+            System.debug('Amount: ' + Line.Amount);
+            line.Description    = woli.PricebookEntry.Product2.Name;
+            line.DetailType = 'SalesItemLineDetail';
+
+
+
+            lineItems.add(line);
+            System.debug('Line : ' + line);
+        }
+
+        invoiceObj.line = lineItems;
+
+        //*****  OVERRIDE TAX  *****//
+        /*
+        QBInvoiceJSON.TxnTaxDetail txnTaxDetail = new QBInvoiceJSON.TxnTaxDetail();
+        QBInvoiceJSON.TaxLine taxLine = new QBInvoiceJSON.TaxLine();
+        QBInvoiceJSON.TaxLineDetail taxLineDetail = new QBInvoiceJSON.TaxLineDetail();
+
+        QBInvoiceJSON.ItemRef taxRateIdRef = new QBInvoiceJSON.ItemRef();
+        taxRateIdRef.name = 'Florida';
+        taxRateIdRef.value = '3'; // Change per QBO
+        taxLineDetail.TaxRateRef = taxRateIdRef;
+        taxLineDetail.PercentBased = true;
+        taxLineDetail.TaxPercent = 7.5;
+
+        taxLine.DetailType = 'TaxLineDetail';
+        taxLine.TaxLineDetail = taxLineDetail;
+
+        txnTaxDetail.TaxLine = new List<QBInvoiceJSON.TaxLine>{taxLine};
+
+        //invoiceObj.TxnTaxDetail = txnTaxDetail;
+        System.debug('txnTaxDetailDebug: ' + InvoiceObj.TxnTaxDetail);
+        */
+
+
+        System.debug('boogabooga' + JSON.serialize(invoiceObj, True).replace('"Long_x":', '"Long":'));
         return JSON.serialize(invoiceObj, True).replace('"Long_x":', '"Long":');
     }
 
-    /**
+     /**
      * Map an purchase order from Salesforce to QBO JSON
      * @param po The purchase order that is used for the mapping
      * @return The json String that is used for the body of the request callout 
@@ -273,5 +369,4 @@ public class QBMap {
         
         return JSON.serialize(itemObj, True).replace('"Long_x":', '"Long":');
     }
-
 }
