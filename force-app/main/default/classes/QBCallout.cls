@@ -140,11 +140,11 @@ public class QBCallout {
         if(p.QBO_Id__c != null){
             query = 'select+*+from+Item+where+Id=+\'' + p.QBO_Id__c + '\'';
         }
-
+        //String query = 'select+*+from+Item+maxresults+1';
         if(p == null){
             Throw new NullPointerException();
         }
-
+        system.debug(query);
         //Initilize query
         String custPath = '/v3/company/'+ QBData.Company_Id__c +'/query?query='+query+'&minorversion='+QBData.minorversion__c;
         String method = 'GET';

@@ -18,7 +18,7 @@ public with sharing class QBProductSync_Controller {
         QBItemQueryJSON queryJson = callout.getItem(p);
         system.debug(queryJson);
         //Check if a item was found
-        if(queryJson != null){
+        if(queryJson != null&&queryJson.QueryResponse.Item!=null){
             if(queryJson.QueryResponse.Item.size() == 1){
                 p.QBO_Id__c = queryJson.QueryResponse.Item[0].Id;
                 p.QBO_SyncToken__c = queryJson.QueryResponse.Item[0].SyncToken;
