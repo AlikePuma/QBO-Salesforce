@@ -5,6 +5,41 @@ public class QBCallout {
     private String namedCredential = 'callout:QBO';   
     private QBO_Metadata__mdt QBData = [SELECT Company_Id__c, minorversion__c FROM QBO_Metadata__mdt];
 
+
+    public QBBatchResponseJSON createQbBatchCall(List<QBProductAndWoliWrapper> wrappers){
+        final String API_CALL = 'batch';
+        
+        //Map inv data to QB Invoice JSON
+        String body = QBMap.mapProductsToBatchItems(wrappers);
+
+        //Initialze url endpoint
+        QBO_Metadata__mdt QBData = [SELECT ID,
+                            base_url__c,
+                            Company_Id__c,
+                            minorversion__c
+                    FROM QBO_Metadata__mdt];
+        String url = QBData.base_url__c + '/v3/company/' + QBData.Company_Id__c + '/' + API_CALL + '?minorversion=' + QBData.minorversion__c;
+
+
+        //Start http request
+        Http h = new Http();
+        HttpRequest req = new HttpRequest();
+        HttpResponse res = new HttpResponse();
+        req.setEndpoint(url);
+        req.setMethod('POST');
+        req.setBody(body);
+        System.debug(body);
+        req.setHeader('Authorization', 'Bearer ' + accessToken);
+        req.setheader('Accept', 'application/json');
+        req.setHeader('Content-Type', 'application/json');
+        res = h.send(req);
+        System.debug(res.getBody());
+        handleResponseError(res.getBody());
+
+        return QBBatchResponseJSON.parse(res.getBody());
+    }
+
+
     public QBCustomerJSON getCustomer(Account acc){
         if(acc == null){
             Throw new NullPointerException();
@@ -15,12 +50,10 @@ public class QBCallout {
         if(acc.QBO_Id__c != null){
             query = 'select+*+from+Customer+where+job=False+and+Id=+\'' + Acc.QBO_Id__c + '\'';
         }
-
         String custPath = '/v3/company/'+ QBData.Company_Id__c +'/query?query='+query+'&minorversion='+QBData.minorversion__c;
         String method = 'GET';
         String body = null;
         Map<String,String> headerMap = new Map<String,String>{'Accept' => 'application/json'};
-
         HttpRequest req = buildReq(namedCredential,custPath,method,body,headerMap);
         Http http = new Http();
         HTTPResponse res = http.send(req); 
@@ -28,13 +61,13 @@ public class QBCallout {
         QBCustomerJSON json = QBCustomerJSON.parse(res.getBody());
         return json;
     }
-    	
+        
+
     /**
      * Create a QB customer using account object
      * @param acc Account used to create  
      */
     public QBCustomerResponseJSON createCustomerCall(Account acc){
-
         //Map acc data to QB Customer JSON
         String body = QBMap.mapAccountData(acc);
 
@@ -49,6 +82,8 @@ public class QBCallout {
 
         return json;
     }
+
+
     public QBInvoiceQueryJSON getInvoice(Invoice__c inv){
         if(inv == null){
             Throw new NullPointerException();
@@ -70,25 +105,31 @@ public class QBCallout {
         QBInvoiceQueryJSON json = QBInvoiceQueryJSON.parse(res.getBody());
         return json;
     }
+
+
     /**
      * Create an invoice for QBO from invoice__c object
      * @param inv The invoice that is needed to create an invoice in QBO
      * @return Response object     
      */
-    public QBInvoiceResponseJSON createInvoiceCall(Invoice__c inv){
-        //Map inv data to QB Invoice JSON
-        String body = QBMap.mapInvoice(inv);
-        String custPath = '/v3/company/'+ QBData.Company_Id__c + '/invoice?minorversion=' + QBData.minorversion__c;
+    public QBInvoiceResponseJSON createInvoiceFromWorkOrderCall(Invoice__c inv, List<WorkOrderLineItem> woliList){
+        String apiCall = 'invoice';
         String method = 'POST';
+
+
+        //Map inv data to QB Invoice JSON
+        String body = QBMap.mapInvoice(inv, woliList);
+        String custPath = '/v3/company/'+ QBData.Company_Id__c + '/' + apiCall + '?minorversion=' + QBData.minorversion__c;
         Map<String,String> headerMap = new Map<String,String>{'Accept' => 'application/json', 'Content-Type' => 'application/json'};
         
-        HttpRequest req = buildReq(namedCredential,custPath,method,body,headerMap);
+        HttpRequest req = buildReq(namedCredential, custPath, method, body, headerMap);
         Http http = new Http();
         HTTPResponse res = http.send(req);   
         handleResponseError(res.getBody());
         return QBInvoiceResponseJSON.parse(res.getBody());
     }
     
+
     public QBPOQueryJSON getPurchaseOrder(Purchase_Order__c po){
         if(po == null){
             Throw new NullPointerException();
@@ -133,6 +174,7 @@ public class QBCallout {
         handleResponseError(res.getBody());
         return QBPOResponseJSON.parse(res.getBody());
     }
+
 
     public QBItemQueryJSON getItem(Product2 p){
         //Initilize query
@@ -183,8 +225,8 @@ public class QBCallout {
         handleResponseError(res.getBody());
         return QBItemResponseJSON.parse(res.getBody());
     }
-
-        /**
+        
+    /**
      * Throws exception if there is an error in the callout
      * @param body The json response from the QB callout
      */

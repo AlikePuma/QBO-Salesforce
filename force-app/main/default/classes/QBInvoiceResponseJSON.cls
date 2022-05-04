@@ -4,6 +4,7 @@ public class QBInvoiceResponseJSON {
 		public String Id {get;set;} 
 		public Integer LineNum {get;set;} 
 		public Double Amount {get;set;} 
+		public String Description {get;set;} 
 		public String DetailType {get;set;} 
 		public SalesItemLineDetail SalesItemLineDetail {get;set;} 
 		public LinkedTxn SubTotalLineDetail {get;set;} 
@@ -19,6 +20,8 @@ public class QBInvoiceResponseJSON {
 							LineNum = parser.getIntegerValue();
 						} else if (text == 'Amount') {
 							Amount = parser.getDoubleValue();
+						} else if (text == 'Description') {
+							Description = parser.getText();
 						} else if (text == 'DetailType') {
 							DetailType = parser.getText();
 						} else if (text == 'SalesItemLineDetail') {
@@ -48,26 +51,6 @@ public class QBInvoiceResponseJSON {
 							value = parser.getText();
 						} else if (text == 'name') {
 							name = parser.getText();
-						} else {
-							System.debug(LoggingLevel.WARN, 'CurrencyRef consuming unrecognized property: '+text);
-							consumeObject(parser);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public class TxnTaxDetail {
-		public double TotalTax {get;set;}
-
-		public TxnTaxDetail(JSONParser parser) {
-			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
-				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
-					String text = parser.getText();
-					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
-						if (text == 'TotalTax') {
-							TotalTax = parser.getDoubleValue();
 						} else {
 							System.debug(LoggingLevel.WARN, 'CurrencyRef consuming unrecognized property: '+text);
 							consumeObject(parser);
@@ -289,6 +272,8 @@ public class QBInvoiceResponseJSON {
 	public class CustomField {
 		public String DefinitionId {get;set;} 
 		public String Type_Z {get;set;} // in json: Type
+		public String StringValue {get;set;} 
+		public String Name {get;set;} 
 
 		public CustomField(JSONParser parser) {
 			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
@@ -299,6 +284,10 @@ public class QBInvoiceResponseJSON {
 							DefinitionId = parser.getText();
 						} else if (text == 'Type') {
 							Type_Z = parser.getText();
+						} else if (text == 'StringValue') {
+							StringValue = parser.getText();
+						} else if (text == 'Name') {
+							Name = parser.getText();
 						} else {
 							System.debug(LoggingLevel.WARN, 'CustomField consuming unrecognized property: '+text);
 							consumeObject(parser);
@@ -309,6 +298,7 @@ public class QBInvoiceResponseJSON {
 		}
 	}
 	
+	
 	public class LinkedTxn {
 
 		public LinkedTxn(JSONParser parser) {
@@ -318,6 +308,107 @@ public class QBInvoiceResponseJSON {
 					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
 						{
 							System.debug(LoggingLevel.WARN, 'LinkedTxn consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public class SalesTermRef {
+		public String value {get;set;} 
+
+		public SalesTermRef(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'value') {
+							value = parser.getText();
+						} else {
+							System.debug(LoggingLevel.WARN, 'SalesTermRef consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public class TaxLine {
+		public String DetailType {get;set;} 
+		public Double Amount {get;set;} 
+		public TaxLineDetail TaxLineDetail {get;set;} 
+
+		public TaxLine(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'DetailType') {
+							DetailType = parser.getText();
+						} else if (text == 'Amount') {
+							Amount = parser.getDoubleValue();
+						} else if (text == 'TaxLineDetail') {
+							TaxLineDetail = new TaxLineDetail(parser);
+						} else {
+							System.debug(LoggingLevel.WARN, 'TaxLine consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public class TaxLineDetail {
+		public Double NetAmountTaxable {get;set;} 
+		public Integer TaxPercent {get;set;} 
+		public SalesTermRef TaxRateRef {get;set;} 
+		public Boolean PercentBased {get;set;} 
+
+		public TaxLineDetail(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'NetAmountTaxable') {
+							NetAmountTaxable = parser.getDoubleValue();
+						} else if (text == 'TaxPercent') {
+							TaxPercent = parser.getIntegerValue();
+						} else if (text == 'TaxRateRef') {
+							TaxRateRef = new SalesTermRef(parser);
+						} else if (text == 'PercentBased') {
+							PercentBased = parser.getBooleanValue();
+						} else {
+							System.debug(LoggingLevel.WARN, 'TaxLineDetail consuming unrecognized property: '+text);
+							consumeObject(parser);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public class TxnTaxDetail {
+		public SalesTermRef TxnTaxCodeRef {get;set;} 
+		public Double TotalTax {get;set;} 
+		public List<TaxLine> TaxLine {get;set;} 
+
+		public TxnTaxDetail(JSONParser parser) {
+			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
+				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {
+					String text = parser.getText();
+					if (parser.nextToken() != System.JSONToken.VALUE_NULL) {
+						if (text == 'TxnTaxCodeRef') {
+							TxnTaxCodeRef = new SalesTermRef(parser);
+						} else if (text == 'TotalTax') {
+							TotalTax = parser.getDoubleValue();
+						} else if (text == 'TaxLine') {
+							TaxLine = arrayOfTaxLine(parser);
+						} else {
+							System.debug(LoggingLevel.WARN, 'TxnTaxDetail consuming unrecognized property: '+text);
 							consumeObject(parser);
 						}
 					}
@@ -354,6 +445,15 @@ public class QBInvoiceResponseJSON {
         if (p.getCurrentToken() == null) p.nextToken();
         while (p.nextToken() != System.JSONToken.END_ARRAY) {
             res.add(new CustomField(p));
+        }
+        return res;
+    }
+
+	private static List<TaxLine> arrayOfTaxLine(System.JSONParser p) {
+        List<TaxLine> res = new List<TaxLine>();
+        if (p.getCurrentToken() == null) p.nextToken();
+        while (p.nextToken() != System.JSONToken.END_ARRAY) {
+            res.add(new TaxLine(p));
         }
         return res;
     }
