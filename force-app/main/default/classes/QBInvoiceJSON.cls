@@ -1,16 +1,37 @@
 public class QBInvoiceJSON {
 
-	public class Line {
-		public Double Amount;
-		public String DetailType;
-		public SalesItemLineDetail SalesItemLineDetail;
+	public static QBInvoiceJSON parse(String json) {
+		return (QBInvoiceJSON) System.JSON.deserialize(json, QBInvoiceJSON.class);
 	}
 
-	public class CustomField {
-		public String DefinitionId;
-		public String StringValue;
-		public String Type;
-		public String Name;
+	// required
+	public List<Line> Line;
+	public EmailAddress BillEmail;
+	public CustomerRef CustomerRef;
+	public String SyncToken;
+
+	// not required
+	public Boolean AllowOnlineACHPayment;
+	public Boolean AllowOnlineCreditCardPayment;
+	public Double Balance;
+	public BillAddr BillAddr;
+	public List<CustomField> CustomField;
+	public MemoRef CustomerMemo;
+	public String DocNumber;
+	public Date DueDate;
+	public String EmailStatus;
+	public String Id;
+	public BillAddr ShipAddr;
+	public SalesTermRef SalesTermRef;
+	public TxnTaxDetail TxnTaxDetail {get;set;} 
+
+
+	public class Line {
+		public Decimal Amount;
+		public String Description;
+		public String DetailType;
+		public SalesItemLineDetail SalesItemLineDetail;
+		public LinkedTxn SubTotalLineDetail;
 	}
 
 	public class BillAddr {
@@ -28,42 +49,19 @@ public class QBInvoiceJSON {
 		public String Country;
 	}
 
-    public class SalesTermRef {
-        public String value;
-    }
+	public class CustomField {
+		public String DefinitionId;
+		public String StringValue;
+		public String Type;
+		public String Name;
+	}
 
-	public List<Line> Line;
-	public List<CustomField> CustomField;
-	public CustomerRef CustomerRef;
-	public Date DueDate;
-	public Double Balance;
-	public String Id;
-	public String SyncToken;
-	public SalesTermRef SalesTermRef;
-	public BillAddr BillAddr;
-	public BillAddr ShipAddr;
-	public EmailAddress BillEmail;
-	public MemoRef CustomerMemo;
-	public String EmailStatus;
-	public String DocNumber;
-	public Boolean AllowOnlineACHPayment;
-	public Boolean AllowOnlineCreditCardPayment;
+	public class CustomerRef {
+		public String value;
+	}	
 
 	public class EmailAddress{
 		public string Address;
-	}
-
-	public class MemoRef{
-		public string value;
-
-	}
-
-
-	public class SalesItemLineDetail {
-		public ItemRef ItemRef;
-		public ItemRef TaxCodeRef;
-		public Decimal Qty;
-        public Decimal UnitPrice;
 	}
 
 	public class ItemRef {
@@ -71,12 +69,49 @@ public class QBInvoiceJSON {
 		public String name;
 	}
 
-	public class CustomerRef {
-		public String value;
+	public class MemoRef{
+		public string value;
 	}
 
-	
-	public static QBInvoiceJSON parse(String json) {
-		return (QBInvoiceJSON) System.JSON.deserialize(json, QBInvoiceJSON.class);
+	public class SalesItemLineDetail {
+		public ItemRef ItemRef;
+		public ItemRef TaxCodeRef;
+		public Decimal Qty;
+		public Decimal UnitPrice;
 	}
+
+    public class SalesTermRef {
+        public String value;
+    }
+
+	public class TaxLine {
+		// Required
+		public String DetailType {get;set;}  // 'TaxLineDetail'
+		public TaxLineDetail TaxLineDetail {get;set;} 
+		// Not Required
+		public Double Amount {get;set;} 
+	}
+
+	public class TaxLineDetail {
+		// Required
+		public ItemRef TaxRateRef {get;set;}  // Id & Name from QBO
+		// Not Required
+		public Double NetAmountTaxable {get;set;} 
+		public Boolean PercentBased {get;set;}
+		public Decimal TaxPercent {get;set;}  // 8.5 not .085
+	}
+
+	public class TxnTaxDetail {
+		// Not Required
+		public SalesTermRef TxnTaxCodeRef {get;set;} 
+		public Double TotalTax {get;set;} 
+		public List<TaxLine> TaxLine {get;set;} 
+	}
+	
+
+	
+
+	
+
+	
 }

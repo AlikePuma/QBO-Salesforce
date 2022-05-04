@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
+		<members>QBBatchRequestJSON</members>
+		<members>QBBatchRequestJSON_Test</members>
 		<members>QBCallout</members>
 		<members>QBCustomerJSON</members>
 		<members>QBCustomerResponseJSON</members>
@@ -13,9 +15,12 @@
 		<members>QBMap</members>
 		<members>QBOErrorJSON</members>
 		<members>QBOErrorJSON_Test</members>
-		<members>QBPOSync_Controller</members>
 		<members>QBRefreshJSON</members>
 		<members>QBRefreshJSON_Test</members>
+		<members>QBItemJSON</members>
+		<members>QBItemJSON_Test</members>
+		<members>QBItemResponseJSON</members>
+		<members>QBItemResponseJSON_Test</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
@@ -37,16 +42,22 @@
 		<members>Invoice__c.Tax__c</members>
 		<members>Invoice__c.Terms__c</members>
 		<members>Invoice__c.Total__c</members>
+		<members>Product2.QBO_Id__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
 		<members>Invoice__c</members>
-		<members>Purchase_Order_Item__c</members>
-		<members>Purchase_Order__c</members>
 		<members>QBData__c</members>
 		<members>QBO_Metadata__mdt</members>
 		<name>CustomObject</name>
 	</types>
+	<types>
+		<members>WorkOrder-FSL Work Order Layout</members>
+		<members>WorkOrder-Work Order Layout</members>
+		<members>QBO_Metadata__mdt-QBO Metadata Layout</members>
+		<name>Layout</name>
+	</types>
+
 	<types>
 		<members>QB_Auth</members>
 		<members>QB_Sandbox</members>
