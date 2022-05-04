@@ -1,0 +1,2 @@
+<apex:page standardcontroller="Product2" extensions="QBProductSync_Controller" action="{!syncQB}">
+</apex:page>
