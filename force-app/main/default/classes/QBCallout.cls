@@ -178,7 +178,7 @@ public class QBCallout {
 
     public QBItemQueryJSON getItem(Product2 p){
         //Initilize query
-        String query = 'Select+*+from+Item+where+Name=+\'' + p.Name.replaceAll(' ', '+') +'\'' ;     
+        String query = 'Select+*+from+Item+where+Name=+\'' + p.Name.replaceAll(' ', '+').replaceAll('"', '%22') +'\'' ;     
         if(p.QBO_Id__c != null){
             query = 'select+*+from+Item+where+Id=+\'' + p.QBO_Id__c + '\'';
         }

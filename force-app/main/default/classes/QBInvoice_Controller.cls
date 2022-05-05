@@ -12,12 +12,13 @@ public with sharing class QBInvoice_Controller {
         invId = controller.getRecord().Id;
         inv = [SELECT Id,
                      Due_Date__c,
-                      Subtotal__c,
+                      //Subtotal__c,
                        Name, 
                        QBO_Id__c, 
                        QBO_SyncToken__c,
                        Terms__c,
                        Description__c,
+                       Balance_Due__c,
                        Work_Order__c,
                        Work_Order__r.Account.contact__r.email,
                        Work_Order__r.Account.QBO_Id__c,
@@ -68,7 +69,8 @@ public with sharing class QBInvoice_Controller {
         inv.QBO_SyncToken__c = res.Invoice.SyncToken;
         inv.tax__c = res.Invoice.TxnTaxDetail.TotalTax;
         inv.total__c = res.Invoice.TotalAmt;
-        inv.Subtotal__c = res.Invoice.Balance;
+        //inv.Subtotal__c = res.Invoice.Line.;
+        inv.Balance_Due__c = res.Invoice.Balance;
         //DML After Callouts
 
         update inv;
