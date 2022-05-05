@@ -129,20 +129,20 @@ public class QBMap {
 
         Integer daysToAddToDueDate = 0;
         if(inv.Terms__c == 'Due on receipt'){
-            sales.value = '1';
+            sales.value = '6';
             daysToAddToDueDate = 0;
-        }else if(inv.Terms__c == 'Net 10'){
-            sales.value = '5';
-            daysToAddToDueDate = 10;
         }else if(inv.Terms__c == 'Net 15'){
-            sales.value = '2';
+            sales.value = '7';
             daysToAddToDueDate = 15;
         }else if(inv.Terms__c == 'Net 30'){
-            sales.value = '3';
-            daysToAddToDueDate = 30;
-        }else{
-            sales.value = '4';
+            sales.value = '8';
+            daysToAddToDueDate = 15;
+        }else if(inv.Terms__c == 'Net 60'){
+            sales.value = '9';
             daysToAddToDueDate = 60;
+        }else{
+            sales.value = '6';
+            daysToAddToDueDate = 0;
         }
         invoiceObj.DueDate = Date.today().addDays(daysToAddToDueDate);
         invoiceObj.SalesTermRef = sales;
@@ -203,8 +203,8 @@ public class QBMap {
             // Pull this from QB instance, 
             // this is the product/service (or Item) required for an invoice line item
             
-            itemRef.name = 'Product';
-            itemRef.value = '21'; 
+            itemRef.name = woli.PricebookEntry.Product2.Name;
+            itemRef.value = woli.PricebookEntry.Product2.QBO_Id__c; 
             salesItemLineDetail.ItemRef = itemRef;
 
             // set line item details
@@ -220,7 +220,7 @@ public class QBMap {
             // Set line parent vars
             line.Amount = (salesItemLineDetail.Qty  * salesItemLineDetail.UnitPrice).setScale(2);
             System.debug('Amount: ' + Line.Amount);
-            line.Description    = woli.PricebookEntry.Product2.Name;
+            line.Description    = woli.PricebookEntry.Product2.Family;
             line.DetailType = 'SalesItemLineDetail';
 
 

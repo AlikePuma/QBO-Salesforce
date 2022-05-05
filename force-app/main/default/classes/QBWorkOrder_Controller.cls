@@ -10,7 +10,7 @@ public class QBWorkOrder_Controller {
         Set<Id> productIdsNotInQB;
 
         woliMap = new Map<ID, WorkOrderLineItem>([SELECT Id, Subtotal, Description, Quantity, PricebookEntry.Product2.Name, 
-                    UnitPrice, PricebookEntry.Product2.Id, PricebookEntry.Product2.QBO_Id__c
+                    UnitPrice, PricebookEntry.Product2.Id, PricebookEntry.Product2.QBO_Id__c, PricebookEntry.Product2.Family
                     FROM WorkOrderLineItem 
                     WHERE WorkOrderId =: inv.Work_Order__c]);
         

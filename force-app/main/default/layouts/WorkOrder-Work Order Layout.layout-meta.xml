@@ -281,6 +281,9 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
+        <fields>Due_Date__c</fields>
+        <fields>Balance_Due__c</fields>
+        <fields>Total__c</fields>
         <relatedList>Invoice__c.Work_Order__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
