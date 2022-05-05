@@ -1,11 +1,7 @@
 public with sharing class QBCustomerSync_Controller {
-
-    public Id accId{get;set;}
-    public Account acc {get;set;}
-
-    public QBCustomerSync_Controller(ApexPages.StandardController stdController) {
-        accId = ApexPages.currentPage().getParameters().get('id');
-        acc = [SELECT Id,
+	@InvocableMethod(label='Sync Customer' description='Creates and syncs account with QB customer' category= 'Account')
+    public static void callFromFlow(List<Id> accId){
+        Account acc = [SELECT Id,
                       Name, 
                       QBO_Id__c, 
                       QBO_SyncToken__c,
@@ -23,13 +19,10 @@ public with sharing class QBCustomerSync_Controller {
                       BillingLatitude,
                       BillingLongitude
               FROM Account 
-              WHERE Id =: accId];
-    }
-
-    public Pagereference syncQB(){
+                       WHERE Id =: accId[0]];
+        
         QBCallout callout = new QBCallout();
         QBCustomerJSON accountData = callout.getCustomer(acc);
-
         //Check if a customer was found
         if(accountData.QueryResponse.Customer != null){
             
@@ -46,10 +39,8 @@ public with sharing class QBCustomerSync_Controller {
                throw new ListException(); 
             }
         }
-
         QBCustomerResponseJSON accountPushData = callout.createCustomerCall(acc);
         System.debug(accountPushData);
-
         if(accountPushData.Customer.Id != null){
             acc.QBO_ID__c = accountPushData.Customer.Id;
         }
@@ -59,11 +50,5 @@ public with sharing class QBCustomerSync_Controller {
         
         //DML After Callouts
         update acc;
-
-        return new PageReference('/'+accId);
-    }
-    public void wait3Seconds() {
-        Long startTime = DateTime.now().getTime();
-        while(DateTime.now().getTime()-startTime<3000);
     }
 }
