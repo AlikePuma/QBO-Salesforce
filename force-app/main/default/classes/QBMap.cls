@@ -369,4 +369,42 @@ public class QBMap {
         
         return JSON.serialize(itemObj, True).replace('"Long_x":', '"Long":');
     }
+
+            /**
+     * Map the SF Account data to the QB vendor JSON
+     * @param acc The account data that is mapped
+     * @return the QB json that can be used to CRUD a customer in QBO
+     */
+    public static String mapAccountDataVendor(Account acc){
+        QBVendorJSON.Vendor vendor = new QBVendorJSON.Vendor();
+        //Create Primary Phone
+        QBVendorJSON.PrimaryPhone phone = new QBVendorJSON.PrimaryPhone ();
+        phone.FreeFormNumber = acc.Phone;
+        vendor.PrimaryPhone = phone;
+        QBVendorJSON.PrimaryEmailAddr email = new QBVendorJSON.PrimaryEmailAddr ();
+        email.Address = 'joshua@southerncloud.com'; //does not have correct mapping
+        vendor.PrimaryEmailAddr = email;
+        //QBVendorJSON.WebAddr webAddress = new QBVendorJSON.WebAddr ();
+        //webAddress.URI = 'www.test.com';
+        //vendor.WebAddr = webAddress;
+        QBVendorJSON.PrimaryPhone primaryPhone = new QBVendorJSON.PrimaryPhone ();
+        primaryPhone.FreeFormNumber = '321-222-2222';
+        vendor.PrimaryPhone = primaryPhone;
+        //Create Billing Address
+        QBVendorJSON.BillAddr billAddy = new QBVendorJSON.BillAddr();
+        billAddy.City = acc.BillingCity;
+        billAddy.Line1 = acc.BillingStreet;
+        billAddy.CountrySubDivisionCode = acc.BillingState;
+        billAddy.PostalCode = acc.BillingPostalCode;
+        billAddy.Lat = String.valueOf(acc.BillingLatitude);
+        billAddy.Long_x = String.valueOf(acc.BillingLongitude);
+        billAddy.Country = acc.BillingCountry;
+        vendor.BillAddr = billAddy;
+
+        vendor.DisplayName = acc.Name;
+        vendor.GivenName = acc.Name;
+
+        return JSON.serialize(vendor, True).replace('"Long_x":', '"Long":');
+    }
+
 }
