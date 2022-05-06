@@ -225,6 +225,52 @@ public class QBCallout {
         handleResponseError(res.getBody());
         return QBItemResponseJSON.parse(res.getBody());
     }
+
+    public QBVendorJSON getVendor(Account acc){
+        if(acc == null){
+            Throw new NullPointerException();
+        }
+        //Initilize query
+        String query = 'Select+*+from+Vendor+where+' +
+                             'DisplayName=+\'' + acc.Name.replaceAll(' ', '+') +'\'' ;
+        if(acc.QBO_Id__c != null){
+            query = 'select+*+from+Vendor+where+job=False+and+Id=+\'' + Acc.QBO_Id__c + '\'';
+        }
+        system.debug(query);
+        String custPath = '/v3/company/'+ QBData.Company_Id__c +'/query?query='+query+'&minorversion='+QBData.minorversion__c;
+        String method = 'GET';
+        String body = null;
+        Map<String,String> headerMap = new Map<String,String>{'Accept' => 'application/json'};
+
+        HttpRequest req = buildReq(namedCredential,custPath,method,body,headerMap);
+        Http http = new Http();
+        HTTPResponse res = http.send(req); 
+        system.debug(res.getBody());
+        handleResponseError(res.getBody());
+        QBVendorJSON json = QBVendorJSON.parse(res.getBody());
+        return json;
+    }
+
+    /**
+     * Create a QB vendor using account object
+     * @param acc Account used to create  
+     */
+    public QBVendorResponseJSON createVendorCall(Account acc){
+
+        //Map acc data to QB Customer JSON
+        String body = QBMap.mapAccountDataVendor(acc);
+        system.debug('createVendorCall');
+        String custPath = '/v3/company/'+ QBData.Company_Id__c + '/vendor?minorversion=' + QBData.minorversion__c;
+        String method = 'POST';
+        Map<String,String> headerMap = new Map<String,String>{'Accept' => 'application/json', 'Content-Type' => 'application/json'};            
+        HttpRequest req = buildReq(namedCredential,custPath,method,body,headerMap);
+        Http http = new Http();
+        HTTPResponse res = http.send(req); 
+        handleResponseError(res.getBody());
+        QBVendorResponseJSON json = QBVendorResponseJSON.parse(res.getBody());
+
+        return json;
+    }
         
     /**
      * Throws exception if there is an error in the callout
