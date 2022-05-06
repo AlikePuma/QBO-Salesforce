@@ -1,5 +1,5 @@
-public with sharing class QBInvoice_Controller {
-	@InvocableMethod(label='Sync Invoice' description='Creates and syncs invoice with QB invoice' category= 'Account')
+public with sharing class QBInvoiceSync_Controller {
+	@InvocableMethod(label='Sync Invoice' description='Creates and syncs invoice with QB invoice' category= 'Invoice__c')
     public static void callFromFlow(List<Id> invId){
         invoice__c inv = [SELECT Id,
                            Due_Date__c,
