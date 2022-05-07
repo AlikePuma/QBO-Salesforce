@@ -287,14 +287,15 @@ public class QBMap {
         purchaseOrderObj.POEmail = email;
 
         QBPOJSON.VendorRef vendorRef = new QBPOJSON.VendorRef();
-        //vendorRef.value = po.Vendor_Account__r.QBO_Id__c;
-        vendorRef.value = '63';
-        vendorRef.Name = 'Test Vendor';
+        vendorRef.value = po.Vendor_Account__r.QBO_Id__c;
+        //vendorRef.value = '63';
+        //vendorRef.Name = 'Test Vendor';
+        //vendorRef.Name = po.Vendor_Account__r.Name;
         purchaseOrderObj.VendorRef = vendorRef;
 
         QBPOJSON.APAccountRef APAccountRef = new QBPOJSON.APAccountRef();
-        APAccountRef.value = '135';
-        APAccountRef.Name = 'Accounts Payable (A/P)';
+        //APAccountRef.value = '135';
+        //APAccountRef.Name = 'Accounts Payable (A/P)';
         purchaseOrderObj.APAccountRef = APAccountRef;
 
         //Create Shipping Address
@@ -330,8 +331,8 @@ public class QBMap {
         }
         QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef();
             //@todo unhardcode this
-            itemRef.name = 'SoClo-DataBackup';//Sandbox: 'Services';
-            itemRef.value = '27'; //Sandbox: '19'; Prod '1'
+            itemRef.name = 'Services';//Sandbox: 'Services';
+            itemRef.value = '34'; //Sandbox: '19'; Prod '1'
             detail.ItemRef = itemRef;
 
         purchaseOrderObj.Id = po.QBO_Id__c;

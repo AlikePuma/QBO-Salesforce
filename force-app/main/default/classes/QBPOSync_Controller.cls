@@ -4,7 +4,25 @@ public with sharing class QBPOSync_Controller {
         Purchase_Order__c po = [SELECT Id,
                                 Name, 
                                 QBO_Id__c, 
-                                QBO_SyncToken__c
+                                QBO_SyncToken__c,
+                                Vendor_Account__c,
+                                Vendor_Account__r.QBO_Id__c,
+                                Vendor_Account__r.contact__r.email,
+                                Vendor_Account__r.Name,
+                                Vendor_Account__r.Contact__r.Name,
+                                Vendor_Account__r.ShippingCity,
+                                Vendor_Account__r.ShippingStreet,
+                                Vendor_Account__r.ShippingState,
+                                Vendor_Account__r.ShippingCountry,
+                                Vendor_Account__r.ShippingPostalCode,
+                                Vendor_Account__r.Phone,
+                                Vendor_Account__r.BillingCity,
+                                Vendor_Account__r.BillingStreet,
+                                Vendor_Account__r.BillingCountry,
+                                Vendor_Account__r.BillingPostalCode,
+                                Vendor_Account__r.BillingState,
+                                Vendor_Account__r.BillingLatitude,
+                                Vendor_Account__r.BillingLongitude
                             FROM Purchase_Order__c 
                             WHERE Id =: poId[0]];
         
