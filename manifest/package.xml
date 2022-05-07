@@ -115,5 +115,9 @@
 		<members>Opportunity.Create_Work_Orders_Line_Items</members>
 		<name>WebLink</name>
 	</types>
+<types>
+		<members>SoClo_Sync_SF_Account_To_QB_Customer_Vendor</members>
+		<name>FlowDefinition</name>
+	</types>
 	<version>53.0</version>
 </Package>

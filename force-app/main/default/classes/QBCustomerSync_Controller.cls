@@ -1,5 +1,5 @@
 public with sharing class QBCustomerSync_Controller {
-	@InvocableMethod(label='Sync Customer' description='Creates and syncs account with QB customer' category= 'Account')
+	@InvocableMethod(label='Sync Customer / Vendor' description='Creates and syncs account with QB customer or vendor' category= 'Account')
     public static void callFromFlow(List<Id> accId){
         Account acc = [SELECT Id,
                       Name, 
