@@ -21,6 +21,14 @@ public with sharing class QBCustomerSync_Controller {
               FROM Account 
                        WHERE Id =: accId[0]];
         
+       if(acc.Type=='Customer'){
+        customer(acc);
+       }
+       if(acc.Type=='Vendor'){
+        vendor(acc);
+       }
+    }
+    public static void customer(Account acc){
         QBCallout callout = new QBCallout();
         QBCustomerJSON accountData = callout.getCustomer(acc);
         //Check if a customer was found
@@ -51,4 +59,37 @@ public with sharing class QBCustomerSync_Controller {
         //DML After Callouts
         update acc;
     }
+
+    public static void vendor(Account acc){
+        QBCallout callout = new QBCallout();
+        QBVendorJSON accountData = callout.getVendor(acc);
+        //Check if a vendor was found
+        if(accountData.QueryResponse.Vendor != null){
+            
+            //Check if only 1 vendor was found
+            if(accountData.QueryResponse.Vendor.size() == 1){
+                for(QBvendorJSON.Vendor c : accountData.QueryResponse.Vendor){
+                    acc.QBO_Id__c = c.id;
+                    System.debug('QB Id: ' + acc.QBO_Id__c);
+                    acc.QBO_SyncToken__c = c.SyncToken;
+                    System.debug('QB Synctoken: ' + acc.QBO_SyncToken__c );
+                }
+            }else{
+                //Multiple Vendor Error Handling
+               throw new ListException(); 
+            }
+        }
+        QBVendorResponseJSON accountPushData = callout.createVendorCall(acc);
+        System.debug(accountPushData);
+        if(accountPushData.Vendor.Id != null){
+            acc.QBO_ID__c = accountPushData.Vendor.Id;
+        }
+        if(accountPushData.Vendor.SyncToken != null){
+            acc.QBO_SyncToken__c = accountPushData.Vendor.SyncToken;
+        }
+        
+        //DML After Callouts
+        update acc;
+    }
+
 }
