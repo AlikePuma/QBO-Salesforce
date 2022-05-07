@@ -5,6 +5,7 @@ public with sharing class QBCustomerSync_Controller {
                       Name, 
                       QBO_Id__c, 
                       QBO_SyncToken__c,
+                      Type,
                       ShippingCity,
                       ShippingStreet,
                       ShippingState,
