@@ -129,19 +129,19 @@ public class QBMap {
 
         Integer daysToAddToDueDate = 0;
         if(inv.Terms__c == 'Due on receipt'){
-            sales.value = '6';
+            sales.value = '11';
             daysToAddToDueDate = 0;
         }else if(inv.Terms__c == 'Net 15'){
-            sales.value = '7';
+            sales.value = '12';
             daysToAddToDueDate = 15;
         }else if(inv.Terms__c == 'Net 30'){
-            sales.value = '8';
+            sales.value = '13';
             daysToAddToDueDate = 15;
         }else if(inv.Terms__c == 'Net 60'){
-            sales.value = '9';
+            sales.value = '14';
             daysToAddToDueDate = 60;
         }else{
-            sales.value = '6';
+            sales.value = '11';
             daysToAddToDueDate = 0;
         }
         invoiceObj.DueDate = Date.today().addDays(daysToAddToDueDate);
@@ -288,15 +288,15 @@ public class QBMap {
 
         QBPOJSON.VendorRef vendorRef = new QBPOJSON.VendorRef();
         vendorRef.value = po.Vendor_Account__r.QBO_Id__c;
-        vendorRef.value = '63';
+        //vendorRef.value = '63';
         //vendorRef.Name = 'Test Vendor';
-        //vendorRef.Name = po.Vendor_Account__r.Name;
+        vendorRef.Name = po.Vendor_Account__r.Name;
         purchaseOrderObj.VendorRef = vendorRef;
 
         QBPOJSON.APAccountRef APAccountRef = new QBPOJSON.APAccountRef();
-        APAccountRef.value = '135';
+        //APAccountRef.value = '135';
         //APAccountRef.Name = 'Accounts Payable (A/P)';
-        purchaseOrderObj.APAccountRef = APAccountRef;
+        //purchaseOrderObj.APAccountRef = APAccountRef;
 
         //Create Shipping Address
         QBPOJSON.ShipAddr shipAddy = new QBPOJSON.ShipAddr();
@@ -321,19 +321,20 @@ public class QBMap {
                                po.Vendor_Account__r.ShippingPostalCode + '\n';           
                                purchaseOrderObj.ShipAddr = shipAddy;
         }
+        QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef();
         for(Purchase_Order_Item__c poi : poli){
             //map line detail fields
-            //QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef();
+            
             //@todo unhardcode this
             //itemRef.name = poi.Product__r.Name;//Sandbox: 'Services';
-            //itemRef.value = poi.Product__r.QBO_Id__c; //Sandbox: '19'; Prod '1'
-            //detail.ItemRef = itemRef;
-        }
-        QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef();
-            //@todo unhardcode this
-            itemRef.name = 'Test Prod 1';//Sandbox: 'Services';
-            itemRef.value = '23'; //Sandbox: '19'; Prod '1'
+            itemRef.value = poi.Product__r.QBO_Id__c; //Sandbox: '19'; Prod '1'
             detail.ItemRef = itemRef;
+        }
+        //QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef();
+            //@todo unhardcode this
+            //itemRef.name = 'Test Prod 1';//Sandbox: 'Services';
+            //itemRef.value = '23'; //Sandbox: '19'; Prod '1'
+            //detail.ItemRef = itemRef;
 
         purchaseOrderObj.Id = po.QBO_Id__c;
         purchaseOrderObj.SyncToken = po.QBO_SyncToken__c;
@@ -364,13 +365,13 @@ public class QBMap {
         itemObj.Type = 'NonInventory';
 
         QBItemJSON.IncomeAccountRef IncomeAccountRef = new QBItemJSON.IncomeAccountRef();
-        IncomeAccountRef.value = '96';
-        IncomeAccountRef.name = 'Sales';
+        IncomeAccountRef.value = p.Income_Account__c;
+        //IncomeAccountRef.name = toLabel(p.Income_Account__c);
         itemObj.IncomeAccountRef = IncomeAccountRef;
 
         QBItemJSON.ExpenseAccountRef ExpenseAccountRef = new QBItemJSON.ExpenseAccountRef();
-        ExpenseAccountRef.value = '127';
-        ExpenseAccountRef.name = 'Purchases';
+        ExpenseAccountRef.value = p.Expense_Account__c;
+        //ExpenseAccountRef.name = toLabel(p.Expense_Account__c);
         itemObj.ExpenseAccountRef = ExpenseAccountRef;
 
         

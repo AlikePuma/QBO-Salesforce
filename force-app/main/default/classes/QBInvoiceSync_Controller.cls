@@ -51,8 +51,8 @@ public with sharing class QBInvoiceSync_Controller {
         inv.Due_Date__c = Date.valueOf(res.Invoice.DueDate);
         inv.QBO_Id__c = res.Invoice.Id;
         inv.QBO_SyncToken__c = res.Invoice.SyncToken;
-        inv.tax__c = res.Invoice.TxnTaxDetail.TotalTax;
-        inv.total__c = res.Invoice.TotalAmt;
+        //inv.tax__c = res.Invoice.TxnTaxDetail.TotalTax;
+        //inv.total__c = res.Invoice.TotalAmt;
         //inv.Subtotal__c = res.Invoice.Line.;
         inv.Balance_Due__c = res.Invoice.Balance;
         //DML After Callouts

@@ -2,7 +2,8 @@ public with sharing class QBPOSync_Controller {
     @InvocableMethod(label='Sync Purchase Order' description='Creates and syncs PO with QB PO' category= 'Purchase Order')
     public static void callFromFlow(List<Id> poId){
         Purchase_Order__c po = [SELECT Id,
-                                Name, 
+                                Name,
+                                (Select Id,Product__c,Product__r.QBO_Id__c From Purchase_Order_Items__r), 
                                 QBO_Id__c, 
                                 QBO_SyncToken__c,
                                 Vendor_Account__c,
@@ -40,7 +41,7 @@ public with sharing class QBPOSync_Controller {
         }
         //QBWorkOrder_Controller woController = new QBWorkOrder_Controller();
         //woController.wrapWOliAndProduct(inv);
-        QBPOResponseJSON res = callout.createPurchaseOrderCall(po,new List<Purchase_Order_Item__c>());        
+        QBPOResponseJSON res = callout.createPurchaseOrderCall(po,po.Purchase_Order_Items__r);        
         po.QBO_Id__c = res.PurchaseOrder.Id;
         po.QBO_SyncToken__c = res.PurchaseOrder.SyncToken;
         //DML After Callouts
