@@ -288,13 +288,13 @@ public class QBMap {
 
         QBPOJSON.VendorRef vendorRef = new QBPOJSON.VendorRef();
         vendorRef.value = po.Vendor_Account__r.QBO_Id__c;
-        //vendorRef.value = '63';
+        vendorRef.value = '63';
         //vendorRef.Name = 'Test Vendor';
         //vendorRef.Name = po.Vendor_Account__r.Name;
         purchaseOrderObj.VendorRef = vendorRef;
 
         QBPOJSON.APAccountRef APAccountRef = new QBPOJSON.APAccountRef();
-        //APAccountRef.value = '135';
+        APAccountRef.value = '135';
         //APAccountRef.Name = 'Accounts Payable (A/P)';
         purchaseOrderObj.APAccountRef = APAccountRef;
 
@@ -331,8 +331,8 @@ public class QBMap {
         }
         QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef();
             //@todo unhardcode this
-            itemRef.name = 'Services';//Sandbox: 'Services';
-            itemRef.value = '34'; //Sandbox: '19'; Prod '1'
+            itemRef.name = 'Test Prod 1';//Sandbox: 'Services';
+            itemRef.value = '23'; //Sandbox: '19'; Prod '1'
             detail.ItemRef = itemRef;
 
         purchaseOrderObj.Id = po.QBO_Id__c;
@@ -364,9 +364,15 @@ public class QBMap {
         itemObj.Type = 'NonInventory';
 
         QBItemJSON.IncomeAccountRef IncomeAccountRef = new QBItemJSON.IncomeAccountRef();
-        IncomeAccountRef.value = '121';
-        IncomeAccountRef.name = p.Name;
+        IncomeAccountRef.value = '96';
+        IncomeAccountRef.name = 'Sales';
         itemObj.IncomeAccountRef = IncomeAccountRef;
+
+        QBItemJSON.ExpenseAccountRef ExpenseAccountRef = new QBItemJSON.ExpenseAccountRef();
+        ExpenseAccountRef.value = '127';
+        ExpenseAccountRef.name = 'Purchases';
+        itemObj.ExpenseAccountRef = ExpenseAccountRef;
+
         
         return JSON.serialize(itemObj, True).replace('"Long_x":', '"Long":');
     }
