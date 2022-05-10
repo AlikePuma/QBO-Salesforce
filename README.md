@@ -1,37 +1,75 @@
-# You will need a quickbooks developer account and postman for initial setup. You need postman to get your first refresh token in salesforce.
+1.	**Create An App (Intuit)** 
+    1. Create a developer account (https://developer.intuit.com)
+    2.  Click the ‘Dashboard’ tab.
+    3.	Click the ‘+ Create an app’ button.
+    4.	Click ‘QuickBooks Online and Payments’ box.
+        1.	Name – Salesforce Integration
+        2.	com.intuit.quickbooks.accounting – Checked
+    5.	Under ‘Development Settings’, click the ‘Keys & credentials’ tab
+    6.	Copy and save your Client Id and Client secret, you will need it later
 
-## 1. Go to developer.intuit.com and create an accounting app.
-![image](https://user-images.githubusercontent.com/20245187/147251086-c5dc70cb-235b-4f9f-ac03-3126034c3362.png)
 
-## 2. Add https://www.getpostman.com/oauth2/callback to the Redirect URIs section on your app detail page.
-![image](https://user-images.githubusercontent.com/20245187/147251540-c048dafb-112f-44d7-9d3a-1285fdb8b031.png)
-
-## 3. Open Postman, create a new workspace, open the authorization tab, set type to Auth 2.0.
-(a quicker and easier way might be to just go here to [Intuit Developer Playground](https://developer.intuit.com/app/developer/playground))
-
-![image](https://user-images.githubusercontent.com/20245187/147252004-041e2fc0-5c4f-4c5f-8d32-3d695c2febcc.png)
+2. **Create Auth. Provider (Salesforce)**
+   1.  In setup, type ‘Auth. Provider’ in the quick find box. 
+   2.  Click the ‘New’ button.
+       1.  Provider Type – Open ID Connect
+       2.  Name – QuickBooks
+       3.  URL Suffix – QuickBooks
+       4.  Customer Key – Use client id from Step 1.e
+       5.  Customer Secret = Use client secret from Step 1.f
+       6.  Authorize Endpoint URL - https://appcenter.intuit.com/connect/oauth2
+       7.  Token Endpoint URL -https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer
+       8.  Default Scopes - com.intuit.quickbooks.accounting
+       9.  Send access token in header – Checked
+       10. Include Consumer Secret in API Responses – Checked
  
-  - Callback URL - https://www.getpostman.com/oauth2/callback
-  - Auth URL - https://appcenter.intuit.com/connect/oauth2
-  - Access Token URL - https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer
-  - Client Id - Get from app detail page
-  - Client Secret - Get from app detail page
-  - Scope - com.intuit.quickbooks.accounting
-  - State - Salesforce
+3. **Add Callback URL To App (Intuit)**
+   1. Go back to intuit developer account.
+   2. Click the ‘Dashboard’ tab.
+   3. Click on the name of your app (Salesforce Integration).
+   4. Under ‘Development Settings’, click the ‘Keys & credentials’ tab.
+   5. Click the ‘Add URI’ button.
+   6. Paste the callback URL from Step 2.d
+   7. Click the save button.
 
-We will use this connection later
+4. **Create a sandbox company (Intuit)**
+   1. Log into your intuit developer account.
+   2. Hover over the ‘API Docs & Tools’..
+   3. Select ‘Sandbox’.
+   4. Click the ‘+ Add a sandbox company’.
+      1.  QuickBooks Online Plus – Selected
+      2.  Country – United States
+   5. Click the ‘Add’ button. 
+   6. Take note of your sandbox name, you will need it later.
+   7. Under your sandbox name, copy the Company Id, you will need it later.
 
-## 4. Go to custom metadata types in salesforce, click 'manage records' next to QBO Metadata and create a new metadata record.
-
-  - Label - Default
-  - QBO Metadata Label - Default
-  - Base URL -  https://sandbox-quickbooks.api.intuit.com
-  - MinorVersion - API version of app ([Intuit Postman Docs Step 7](https://developer.intuit.com/app/developer/qbo/docs/develop/sandboxes/postman)) Postman > Environments tab (left) > QBO ENV Variables > minorversion
-  - Company Id - Sandbox Id ([Find here, at sandboxes list](https://developer.intuit.com/app/developer/sandbox))
-
-## 5. Go to custom settings, click 'Manage' on QBData, click the new button.
-
-  - Client Id - developer.intuit.com app detail page
-  - Client Secret - developer.intuit.com app detail page
-  - Auth URL - https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer
-  - Refresh Token - Use step 3 to get the refresh token
+5. **Create Named Credential (Salesforce)**
+   1. In setup, type ‘named credential’ in the quick find box. 
+   2. Click the ‘New Named Credential’ button.
+      1. Label - QBO
+      2. Name - QBO
+      3. URL - https://sandbox-quickbooks.api.intuit.com (Sandbox API)
+      4. Identify Type – Named Principle
+      5. Authentication Protocol - OAuth 2.0
+      6. Authentication Provider – QuickBooks
+      7. Scope - com.intuit.quickbooks.accounting
+      8. Generate Authorization Header – Checked
+      9. Start Authentication Flow on Save - Checked
+      10. Allow Merge Fields in HTTP Header – Checked
+      11. Allow Merge Fields in HTTP Body – Unchecked
+   3. Click the ‘Save’ button.
+   4. After clicking the save button, you will be redirected to QuickBooks login.
+   5. Enter your login credentials. 
+   6. You may be asked to select a sandbox if you have more than one. Select the sandbox from Step 4.f
+ 
+6. **Add Sandbox Company Information (Salesforce)**
+   1. In setup, type ‘Custom Metadata’ in the quick find box.
+   2. Look for ‘QBO Metadata’ in the list of custom metadata, then click ‘Manage Records’ to the left of the metadata name.
+   3. Click the ‘Edit’ button next to the label ‘Default’.
+      1. Company Id – Enter the company Id from step 4.g
+      2. Minor Version – Follow the steps below.
+         1. Go to your intuit developer account
+         2. Hover over ‘API Docs & Tools’.
+         3. Select ‘API Explorer’.
+         4. Select the drop down to the right of your demo org.
+         5. Use the highest minor version in the dropdown above.
