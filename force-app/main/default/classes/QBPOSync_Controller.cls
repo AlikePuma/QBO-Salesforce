@@ -39,11 +39,11 @@ public with sharing class QBPOSync_Controller {
                throw new ListException(); 
             }
         }
-        //QBWorkOrder_Controller woController = new QBWorkOrder_Controller();
-        //woController.wrapWOliAndProduct(inv);
+
         QBPOResponseJSON res = callout.createPurchaseOrderCall(po,po.Purchase_Order_Items__r);        
         po.QBO_Id__c = res.PurchaseOrder.Id;
         po.QBO_SyncToken__c = res.PurchaseOrder.SyncToken;
+        
         //DML After Callouts
         update po;
     }    
