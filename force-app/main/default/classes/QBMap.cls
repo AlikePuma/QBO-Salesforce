@@ -125,23 +125,17 @@ public class QBMap {
         //*****  TERMS & DUE DATE  *****//
         QBInvoiceJSON.SalesTermRef sales = new QBInvoiceJSON.SalesTermRef();
         //these values are different for each QB org
-        
-
+        sales.value = inv.Terms__c;
         Integer daysToAddToDueDate = 0;
         if(inv.Terms__c == 'Due on receipt'){
-            sales.value = '11';
             daysToAddToDueDate = 0;
         }else if(inv.Terms__c == 'Net 15'){
-            sales.value = '12';
             daysToAddToDueDate = 15;
         }else if(inv.Terms__c == 'Net 30'){
-            sales.value = '13';
-            daysToAddToDueDate = 15;
+            daysToAddToDueDate = 30;
         }else if(inv.Terms__c == 'Net 60'){
-            sales.value = '14';
             daysToAddToDueDate = 60;
         }else{
-            sales.value = '11';
             daysToAddToDueDate = 0;
         }
         invoiceObj.DueDate = Date.today().addDays(daysToAddToDueDate);
