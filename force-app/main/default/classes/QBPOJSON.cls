@@ -22,10 +22,10 @@ public class QBPOJSON {
 	public class ItemBasedExpenseLineDetail {
 		public ItemRef ItemRef;
 		public ItemRef CustomerRef;
-		public Integer Qty;
+		public Decimal Qty;
 		public TaxCodeRef TaxCodeRef;
 		public String BillableStatus;
-		public Integer UnitPrice;
+		public Decimal UnitPrice;
 	}
 
 	public class TaxCodeRef {
@@ -51,12 +51,13 @@ public class QBPOJSON {
 	public class APAccountRef {
 		public String name; 
 		public String value;
-		} 
+	} 
 
 	public class VendorRef {
 		public String name; 
 		public String value;
-		} 
+	} 
+
 
 	public static QBPOJSON parse(String json) {
 		return (QBPOJSON) System.JSON.deserialize(json, QBPOJSON.class);

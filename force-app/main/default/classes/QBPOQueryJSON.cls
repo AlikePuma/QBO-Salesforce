@@ -93,6 +93,7 @@ public class QBPOQueryJSON {
 	
 	public QueryResponse QueryResponse {get;set;} 
 	public String time_Z {get;set;} // in json: time
+	public String fault {get;set;}
 
 	public QBPOQueryJSON(JSONParser parser) {
 		while (parser.nextToken() != System.JSONToken.END_OBJECT) {
@@ -103,6 +104,8 @@ public class QBPOQueryJSON {
 						QueryResponse = new QueryResponse(parser);
 					} else if (text == 'time') {
 						time_Z = parser.getText();
+					} else if (text == 'fault'){
+						fault = parser.getText();
 					} else {
 						System.debug(LoggingLevel.WARN, 'QBPOQueryJSON consuming unrecognized property: '+text);
 						consumeObject(parser);

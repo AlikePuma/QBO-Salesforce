@@ -1,4 +1,4 @@
-public with sharing class QBInvoice_Controller {
+public with sharing class QBInvoiceSync_Controller {
 	@InvocableMethod(label='Sync Invoice' description='Creates and syncs invoice with QB invoice' category= 'Account')
     public static void callFromFlow(List<Id> invId){
         invoice__c inv = [SELECT Id,
@@ -51,8 +51,8 @@ public with sharing class QBInvoice_Controller {
         inv.Due_Date__c = Date.valueOf(res.Invoice.DueDate);
         inv.QBO_Id__c = res.Invoice.Id;
         inv.QBO_SyncToken__c = res.Invoice.SyncToken;
-        inv.tax__c = res.Invoice.TxnTaxDetail.TotalTax;
-        inv.total__c = res.Invoice.TotalAmt;
+        //inv.tax__c = res.Invoice.TxnTaxDetail.TotalTax;
+        //inv.total__c = res.Invoice.TotalAmt;
         //inv.Subtotal__c = res.Invoice.Line.;
         inv.Balance_Due__c = res.Invoice.Balance;
         //DML After Callouts

@@ -56,8 +56,11 @@
 		<members>Invoice__c.Terms__c</members>
 		<members>Invoice__c.Total__c</members>
 		<members>Invoice__c.Work_Order__c</members>
+		<members>Product2.Expense_Account__c</members>
+		<members>Product2.Income_Account__c</members>
 		<members>Product2.QBO_Id__c</members>
 		<members>Purchase_Order_Item__c.Amount__c</members>
+		<members>Purchase_Order_Item__c.Billable_Status__c</members>
 		<members>Purchase_Order_Item__c.Product__c</members>
 		<members>Purchase_Order_Item__c.Purchase_Order__c</members>
 		<members>Purchase_Order_Item__c.Quantity__c</members>
@@ -87,6 +90,10 @@
 		<members>WorkOrder</members>
 		<members>WorkOrderLineItem</members>
 		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>SoClo_Sync_SF_Account_To_QB_Customer_Vendor</members>
+		<name>FlowDefinition</name>
 	</types>
 	<types>
 		<members>Invoice__c-Invoice Layout</members>
