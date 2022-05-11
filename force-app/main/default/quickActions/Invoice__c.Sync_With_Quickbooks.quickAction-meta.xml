@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <height>250</height>
-    <label>Sync With QB</label>
+    <flowDefinition>SoClo_Sync_SF_Invoice_To_QB_Invoice</flowDefinition>
+    <label>Sync With Quickbooks</label>
     <optionsCreateFeedItem>false</optionsCreateFeedItem>
-    <page>QBInvoice_VF</page>
-    <type>VisualforcePage</type>
-    <width>-100</width>
+    <type>Flow</type>
 </QuickAction>

@@ -111,6 +111,15 @@
         <members>QBO</members>
         <name>NamedCredential</name>
     </types>
+<types>
+        <members>Account.Sync_With_Quickbooks</members>
+        <members>Invoice__c.Sync_With_Quickbooks</members>
+        <members>Product2.Sync_With_Quickbooks</members>
+        <members>Purchase_Order__c.Sync_With_Quickbooks</members>
+        <members>WorkOrder.Create_Invoice</members>
+        <name>QuickAction</name>
+    </types>
+
     <types>
         <members>QB_Auth</members>
         <members>QB_Sandbox</members>
@@ -123,4 +132,5 @@
     </types>
     <version>53.0</version>
 </Package>
+
 

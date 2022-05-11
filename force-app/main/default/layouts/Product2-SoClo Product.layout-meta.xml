@@ -100,7 +100,7 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
-            <actionName>Product2.Sync_To_Quickbooks</actionName>
+            <actionName>Product2.Sync_With_Quickbooks</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>0</sortOrder>
         </platformActionListItems>
