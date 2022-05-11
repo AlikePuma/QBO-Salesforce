@@ -59,9 +59,11 @@ public class QBWorkOrder_Controller {
                     if(bir.Fault == null){
                         String prodId = bir.bId;
                         Product2 prod = productsNotInQBMap.get(prodId);
-                        prod.QBO_Id__c = bir.Item.Id;
+                        if (prod != null) {
+                            prod.QBO_Id__c = bir.Item.Id;
+                            productsToUpdate.add(prod);
+                        }
                         
-                        productsToUpdate.add(prod);
                         inv.QBO_Callout_Status__c = 'Success';
                         inv.Error_Detail__c = '';
                     } else {

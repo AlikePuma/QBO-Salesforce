@@ -119,6 +119,7 @@ public class QBInvoiceQueryJSON {
 		}
 	}
 	
+	/* Commented by Sulay - 5/10/2022
 	public class Line_Z {
 		public String Id {get;set;} 
 		public Integer LineNum {get;set;} 
@@ -188,7 +189,8 @@ public class QBInvoiceQueryJSON {
 			}
 		}
 	}
-	
+	*/
+
 	public class SalesItemLineDetail {
 		public CurrencyRef ItemRef {get;set;} 
 		public CurrencyRef ItemAccountRef {get;set;} 
@@ -250,6 +252,7 @@ public class QBInvoiceQueryJSON {
 		}
 	}
 	
+	/* Commented by Sulay - 5/10/2022
 	public class SalesItemLineDetail_Z {
 		public CurrencyRef ItemRef {get;set;} 
 		public Integer UnitPrice {get;set;} 
@@ -281,7 +284,8 @@ public class QBInvoiceQueryJSON {
 			}
 		}
 	}
-	
+	*/
+
 	public class TaxCodeRef {
 		public String value {get;set;} 
 
@@ -435,8 +439,6 @@ public class QBInvoiceQueryJSON {
 		} while (depth > 0 && parser.nextToken() != null);
 	}
 	
-
-
     private static List<CustomField> arrayOfCustomField(System.JSONParser p) {
         List<CustomField> res = new List<CustomField>();
         if (p.getCurrentToken() == null) p.nextToken();
@@ -445,10 +447,6 @@ public class QBInvoiceQueryJSON {
         }
         return res;
     }
-
-
-
-
 
     private static List<Line> arrayOfLine(System.JSONParser p) {
         List<Line> res = new List<Line>();
@@ -459,10 +457,6 @@ public class QBInvoiceQueryJSON {
         return res;
     }
 
-
-
-
-
     private static List<LinkedTxn> arrayOfLinkedTxn(System.JSONParser p) {
         List<LinkedTxn> res = new List<LinkedTxn>();
         if (p.getCurrentToken() == null) p.nextToken();
@@ -472,13 +466,7 @@ public class QBInvoiceQueryJSON {
         return res;
     }
 
-
-
-
-
-
-
-
+	/* Commented by Sulay - 5/10/2022
     private static List<Line_Z> arrayOfLine_Z(System.JSONParser p) {
         List<Line_Z> res = new List<Line_Z>();
         if (p.getCurrentToken() == null) p.nextToken();
@@ -487,16 +475,7 @@ public class QBInvoiceQueryJSON {
         }
         return res;
     }
-
-
-
-
-
-
-
-
-
-
+	*/
     private static List<Invoice> arrayOfInvoice(System.JSONParser p) {
         List<Invoice> res = new List<Invoice>();
         if (p.getCurrentToken() == null) p.nextToken();
@@ -506,7 +485,7 @@ public class QBInvoiceQueryJSON {
         return res;
     }
 
-
+	/* Commented by Sulay - 5/10/2022
     private static List<Line_Y> arrayOfLine_Y(System.JSONParser p) {
         List<Line_Y> res = new List<Line_Y>();
         if (p.getCurrentToken() == null) p.nextToken();
@@ -515,6 +494,6 @@ public class QBInvoiceQueryJSON {
         }
         return res;
     }
-
+	*/
 
 }

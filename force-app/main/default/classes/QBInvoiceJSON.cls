@@ -23,7 +23,7 @@ public class QBInvoiceJSON {
 	public String Id;
 	public BillAddr ShipAddr;
 	public SalesTermRef SalesTermRef;
-	public TxnTaxDetail TxnTaxDetail {get;set;} 
+	public TxnTaxDetail TxnTaxDetail;
 
 
 	public class Line {
@@ -85,25 +85,25 @@ public class QBInvoiceJSON {
 
 	public class TaxLine {
 		// Required
-		public String DetailType {get;set;}  // 'TaxLineDetail'
-		public TaxLineDetail TaxLineDetail {get;set;} 
+		public String DetailType;  // 'TaxLineDetail'
+		public TaxLineDetail TaxLineDetail;
 		// Not Required
-		public Double Amount {get;set;} 
+		public Double Amount;
 	}
 
 	public class TaxLineDetail {
 		// Required
-		public ItemRef TaxRateRef {get;set;}  // Id & Name from QBO
+		public ItemRef TaxRateRef; // Id & Name from QBO
 		// Not Required
-		public Double NetAmountTaxable {get;set;} 
-		public Boolean PercentBased {get;set;}
-		public Decimal TaxPercent {get;set;}  // 8.5 not .085
+		public Double NetAmountTaxable;
+		public Boolean PercentBased;
+		public Decimal TaxPercent;  // 8.5 not .085
 	}
 
 	public class TxnTaxDetail {
 		// Not Required
-		public SalesTermRef TxnTaxCodeRef {get;set;} 
-		public Double TotalTax {get;set;} 
-		public List<TaxLine> TaxLine {get;set;} 
+		public SalesTermRef TxnTaxCodeRef;
+		public Double TotalTax ;
+		public List<TaxLine> TaxLine ;
 	}
 }
