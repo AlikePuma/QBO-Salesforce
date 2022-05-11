@@ -5,8 +5,8 @@
     <externalId>false</externalId>
     <label>Vendor Account</label>
     <referenceTo>Account</referenceTo>
-    <relationshipLabel>Purchase_Order__c</relationshipLabel>
-    <relationshipName>Purchase_Order_c</relationshipName>
+    <relationshipLabel>Purchase Order</relationshipLabel>
+    <relationshipName>Purchase_Orders</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
