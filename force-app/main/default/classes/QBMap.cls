@@ -129,19 +129,19 @@ public class QBMap {
 
         Integer daysToAddToDueDate = 0;
         if(inv.Terms__c == 'Due on receipt'){
-            sales.value = '6';
+            sales.value = '11';
             daysToAddToDueDate = 0;
         }else if(inv.Terms__c == 'Net 15'){
-            sales.value = '7';
+            sales.value = '12';
             daysToAddToDueDate = 15;
         }else if(inv.Terms__c == 'Net 30'){
-            sales.value = '8';
+            sales.value = '13';
             daysToAddToDueDate = 15;
         }else if(inv.Terms__c == 'Net 60'){
-            sales.value = '9';
+            sales.value = '14';
             daysToAddToDueDate = 60;
         }else{
-            sales.value = '6';
+            sales.value = '11';
             daysToAddToDueDate = 0;
         }
         invoiceObj.DueDate = Date.today().addDays(daysToAddToDueDate);
@@ -258,46 +258,47 @@ public class QBMap {
         return JSON.serialize(invoiceObj, True).replace('"Long_x":', '"Long":');
     }
 
+
      /**
      * Map an purchase order from Salesforce to QBO JSON
      * @param po The purchase order that is used for the mapping
+     * @param poliList Purchase Order Items related to the PO
      * @return The json String that is used for the body of the request callout 
      */
-    public static String mapPurchaseOrder(Purchase_Order__c po,List<Purchase_Order_Item__c> poli){
+    public static String mapPurchaseOrder(Purchase_Order__c po, List<Purchase_Order_Item__c> poliList){
+        
+        /////////////////////////////////
+        // PURCHASE ORDER TOP LEVEL ITEMS
+        /////////////////////////////////
+
         //Initialize purchase order object
         QBPOJSON purchaseOrderObj = new QBPOJSON();
-        
-        //Initialize line items for invoice mapping
-        QBPOJSON.Line line = new QBPOJSON.Line();
-        QBPOJSON.ItemBasedExpenseLineDetail detail = new QBPOJSON.ItemBasedExpenseLineDetail();
-        
-        purchaseOrderObj.Line = new List<QBPOJSON.Line>();
-        //map line item fields
-        line.Amount = 0;
-        //@todo unhardcode this
-        line.DetailType = 'ItemBasedExpenseLineDetail';        
+ 
         purchaseOrderObj.Id = po.QBO_Id__c;
         purchaseOrderObj.SyncToken = po.QBO_SyncToken__c;
-        String invNumber = po.name.replace('PO-', '');
-        purchaseOrderObj.DocNumber  = invNumber;
-        purchaseOrderObj.EmailStatus = 'NotSet';
-
+        String poNumber = po.name.replace('PO-', '');
+        purchaseOrderObj.DocNumber  = poNumber;
+        
+        //*****  EMAIL  *****//
+        purchaseOrderObj.EmailStatus = 'NotSet'; //TODO: SHOULD THIS BE NOTSET?
         QBPOJSON.POEmail email = new QBPOJSON.POEmail();
         email.Address = po.Vendor_Account__r.contact__r.email;
         purchaseOrderObj.POEmail = email;
 
+        //*****  VENDOR REFERENCE  *****//
         QBPOJSON.VendorRef vendorRef = new QBPOJSON.VendorRef();
-        //vendorRef.value = po.Vendor_Account__r.QBO_Id__c;
-        vendorRef.value = '63';
-        vendorRef.Name = 'Test Vendor';
+        vendorRef.value = po.Vendor_Account__r.QBO_Id__c;
+        vendorRef.Name = po.Vendor_Account__r.Name;
         purchaseOrderObj.VendorRef = vendorRef;
 
-        QBPOJSON.APAccountRef APAccountRef = new QBPOJSON.APAccountRef();
-        APAccountRef.value = '135';
-        APAccountRef.Name = 'Accounts Payable (A/P)';
-        purchaseOrderObj.APAccountRef = APAccountRef;
+        //*****  AP ACCOUNT REFERENCE  *****//
+        QBPOJSON.APAccountRef APAccountRef = new QBPOJSON.APAccountRef(); 
+        // TODO 
+        //APAccountRef.value = '135';
+        //APAccountRef.Name = 'Accounts Payable (A/P)';
+        //purchaseOrderObj.APAccountRef = APAccountRef;
 
-        //Create Shipping Address
+        //*****  SHIPPING ADDRESS  *****//
         QBPOJSON.ShipAddr shipAddy = new QBPOJSON.ShipAddr();
         if(po.Vendor_Account__r != null){
             String phone = '';
@@ -320,32 +321,55 @@ public class QBMap {
                                po.Vendor_Account__r.ShippingPostalCode + '\n';           
                                purchaseOrderObj.ShipAddr = shipAddy;
         }
-        for(Purchase_Order_Item__c poi : poli){
-            //map line detail fields
-            //QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef();
-            //@todo unhardcode this
-            //itemRef.name = poi.Product__r.Name;//Sandbox: 'Services';
-            //itemRef.value = poi.Product__r.QBO_Id__c; //Sandbox: '19'; Prod '1'
-            //detail.ItemRef = itemRef;
+
+
+        ////////////////////////////
+        // PURCHASE ORDER LINE ITEMS
+        ////////////////////////////
+       
+        //Initialize line items for invoice mapping
+        QBPOJSON.ItemBasedExpenseLineDetail ItemBasedExpenseLineDetail;
+        List<QBPOJSON.Line> lineItems = new List<QBPOJSON.Line>(); // refers to the list in parent class
+        QBPOJSON.Line line; // refers to the sub class
+
+        for(Purchase_Order_Item__c poli : poliList){
+
+            // Top level line object
+            line = new QBPOJSON.Line();
+            line.Amount = poli.Unit_Cost__c;
+            line.DetailType = 'ItemBasedExpenseLineDetail';    
+            line.Id = poli.Id;
+            
+            // Start ItemBasedExpenseLineDetail
+            ItemBasedExpenseLineDetail = new QBPOJSON.ItemBasedExpenseLineDetail();
+            ItemBasedExpenseLineDetail.BillableStatus = String.valueOf(poli.Billable_Status__c).deleteWhitespace(); // turns 'Not Billable' into 'NotBillable'
+            ItemBasedExpenseLineDetail.UnitPrice = poli.Unit_Cost__c;
+            ItemBasedExpenseLineDetail.Qty = poli.Quantity__c;
+
+            // ItemRef: product Name and QBO Id
+            QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef(); 
+            itemRef.name = poli.Product__r.Name;
+            itemRef.value = poli.Product__r.QBO_Id__c;
+            ItemBasedExpenseLineDetail.ItemRef = itemref;
+
+            // Customer Reference
+            QBPOJSON.ItemRef customerRef = new QBPOJSON.ItemRef();
+            customerRef.value = poli.Purchase_Order__r.Vendor_Account__r.QBO_Id__c;
+            ItemBasedExpenseLineDetail.CustomerRef = customerRef;
+
+            // Tax Code Reference
+            QBPOJSON.TaxCodeRef taxCodeRef = new QBPOJSON.TaxCodeRef();
+            taxCodeRef.value = 'NON';  // NOTE: we need to add a piece to query Tax Code References
+
+            // End ItemBasedExpenseLineDetail
+            line.ItemBasedExpenseLineDetail = ItemBasedExpenseLineDetail; 
+            
+            lineItems.add(line);
         }
-        QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef();
-            //@todo unhardcode this
-            itemRef.name = 'SoClo-DataBackup';//Sandbox: 'Services';
-            itemRef.value = '27'; //Sandbox: '19'; Prod '1'
-            detail.ItemRef = itemRef;
+        purchaseOrderObj.Line = lineItems;
 
-        purchaseOrderObj.Id = po.QBO_Id__c;
-        purchaseOrderObj.SyncToken = po.QBO_SyncToken__c;
-        purchaseOrderObj.TotalAmt = 0;
-
-        //map taxable status for an invoice
-        detail.TaxCodeRef = new QBPOJSON.TaxCodeRef();
-        detail.TaxCodeRef.value = 'TAX';
-        line.ItemBasedExpenseLineDetail = detail;
         system.debug(purchaseOrderObj);
 
-        purchaseOrderObj.Line.add(line);
-                //return null;
         return JSON.serialize(purchaseOrderObj, True).replace('"Long_x":', '"Long":');
     }
 
@@ -363,9 +387,15 @@ public class QBMap {
         itemObj.Type = 'NonInventory';
 
         QBItemJSON.IncomeAccountRef IncomeAccountRef = new QBItemJSON.IncomeAccountRef();
-        IncomeAccountRef.value = '121';
-        IncomeAccountRef.name = p.Name;
+        IncomeAccountRef.value = p.Income_Account__c;
+        //IncomeAccountRef.name = toLabel(p.Income_Account__c);
         itemObj.IncomeAccountRef = IncomeAccountRef;
+
+        QBItemJSON.ExpenseAccountRef ExpenseAccountRef = new QBItemJSON.ExpenseAccountRef();
+        ExpenseAccountRef.value = p.Expense_Account__c;
+        //ExpenseAccountRef.name = toLabel(p.Expense_Account__c);
+        itemObj.ExpenseAccountRef = ExpenseAccountRef;
+
         
         return JSON.serialize(itemObj, True).replace('"Long_x":', '"Long":');
     }
