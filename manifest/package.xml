@@ -56,6 +56,8 @@
 		<members>Invoice__c.Terms__c</members>
 		<members>Invoice__c.Total__c</members>
 		<members>Invoice__c.Work_Order__c</members>
+		<members>Product2.Expense_Account__c</members>
+		<members>Product2.Income_Account__c</members>
 		<members>Product2.QBO_Id__c</members>
 		<members>Purchase_Order_Item__c.Amount__c</members>
 		<members>Purchase_Order_Item__c.Billable_Status__c</members>

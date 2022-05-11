@@ -335,27 +335,27 @@ public class QBMap {
         for(Purchase_Order_Item__c poli : poliList){
 
             // Top level line object
-            line = new QBInvoiceJSON.Line();
+            line = new QBPOJSON.Line();
             line.Amount = poli.Unit_Cost__c;
             line.DetailType = 'ItemBasedExpenseLineDetail';    
             line.Id = poli.Id;
             
             // Start ItemBasedExpenseLineDetail
             ItemBasedExpenseLineDetail = new QBPOJSON.ItemBasedExpenseLineDetail();
-            ItemBasedExpenseLineDetail.BillableStatus = String.valueOf(poi.Billable_Status__c).deleteWhitespace(); // turns 'Not Billable' into 'NotBillable'
+            ItemBasedExpenseLineDetail.BillableStatus = String.valueOf(poli.Billable_Status__c).deleteWhitespace(); // turns 'Not Billable' into 'NotBillable'
             ItemBasedExpenseLineDetail.UnitPrice = poli.Unit_Cost__c;
             ItemBasedExpenseLineDetail.Qty = poli.Quantity__c;
 
             // ItemRef: product Name and QBO Id
-            itemRef = new QBPOJSON.ItemRef(); 
+            QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef(); 
             itemRef.name = poli.Product__r.Name;
             itemRef.value = poli.Product__r.QBO_Id__c;
             ItemBasedExpenseLineDetail.ItemRef = itemref;
 
             // Customer Reference
-            QBInvoiceJSON.CustomerRef customerRef = new QBInvoiceJSON.CustomerRef();
+            QBPOJSON.ItemRef customerRef = new QBPOJSON.ItemRef();
             customerRef.value = poli.Purchase_Order__r.Vendor_Account__r.QBO_Id__c;
-            invoiceObj.CustomerRef = customerRef;
+            ItemBasedExpenseLineDetail.CustomerRef = customerRef;
 
             // Tax Code Reference
             QBPOJSON.TaxCodeRef taxCodeRef = new QBPOJSON.TaxCodeRef();

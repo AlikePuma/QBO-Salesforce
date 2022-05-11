@@ -3,7 +3,7 @@ public class QBCallout {
     private String accessToken{get;set;}
     private String refreshToken{get;set;}
     private String namedCredential = 'callout:QBO';   
-    private QBO_Metadata__mdt QBData = [SELECT Company_Id__c, minorversion__c FROM QBO_Metadata__mdt];
+    private QBO_Metadata__mdt QBData = [SELECT Company_Id__c, minorversion__c FROM QBO_Metadata__mdt WHERE DeveloperName = 'Default'];
 
 
     public QBBatchResponseJSON createQbBatchCall(List<QBProductAndWoliWrapper> wrappers){

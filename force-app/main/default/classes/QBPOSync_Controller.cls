@@ -3,7 +3,10 @@ public with sharing class QBPOSync_Controller {
     public static void callFromFlow(List<Id> poId){
         Purchase_Order__c po = [SELECT Id,
                                 Name,
-                                (Select Id,Product__c,Product__r.QBO_Id__c From Purchase_Order_Items__r), 
+                                (SELECT Id,Product__c,Product__r.QBO_Id__c, Unit_Cost__c, 
+                                Quantity__c, Billable_Status__c,Product__r.Name, Purchase_Order__r.Vendor_Account__r.QBO_Id__c
+                                FROM Purchase_Order_Items__r
+                                ), 
                                 QBO_Id__c, 
                                 QBO_SyncToken__c,
                                 Vendor_Account__c,
@@ -26,24 +29,28 @@ public with sharing class QBPOSync_Controller {
                                 Vendor_Account__r.BillingLongitude
                             FROM Purchase_Order__c 
                             WHERE Id =: poId[0]];
-        
+    
+       
         QBCallout callout = new QBCallout();
-        QBPOQueryJSON queryJson = callout.getPurchaseOrder(po);
-        //Check if an invoice was found
-        if(queryJson != null){
-            if(queryJson.QueryResponse.PurchaseOrder.size() == 1){
+         
+        // Check QB for existing PO
+        if(!String.isBlank(po.QBO_Id__c)){
+            QBPOQueryJSON queryJson = callout.getPurchaseOrder(po);
+            
+            //Check if an PO was found
+            if(queryJson.Fault != null){
+                System.debug(queryJson);
+            } else {
                 po.QBO_Id__c = queryJson.QueryResponse.PurchaseOrder[0].Id;
                 po.QBO_SyncToken__c = queryJson.QueryResponse.PurchaseOrder[0].SyncToken;
-            }else{
-                //Multiple Customer Error Handling
-               throw new ListException(); 
             }
+        } else {
+            QBPOResponseJSON res = callout.createPurchaseOrderCall(po,po.Purchase_Order_Items__r);        
+        
+            po.QBO_Id__c = res.PurchaseOrder.Id;
+            po.QBO_SyncToken__c = res.PurchaseOrder.SyncToken;
         }
 
-        QBPOResponseJSON res = callout.createPurchaseOrderCall(po,po.Purchase_Order_Items__r);        
-        po.QBO_Id__c = res.PurchaseOrder.Id;
-        po.QBO_SyncToken__c = res.PurchaseOrder.SyncToken;
-        
         //DML After Callouts
         update po;
     }    

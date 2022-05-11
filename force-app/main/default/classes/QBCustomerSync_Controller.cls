@@ -19,8 +19,8 @@ public with sharing class QBCustomerSync_Controller {
                       BillingState,
                       BillingLatitude,
                       BillingLongitude
-              FROM Account 
-                       WHERE Id =: accId[0]];
+                    FROM Account 
+                    WHERE Id =: accId[0]];
         
        if(acc.Type=='Customer'){
         customer(acc);
