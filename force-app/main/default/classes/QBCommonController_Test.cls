@@ -65,7 +65,7 @@ public with sharing class QBCommonController_Test {
         System.debug('Invoice Id to add in the list is ------' + inv0.Id);
         List<Id> invIds = new List<Id>();
         invIds.add(inv0.Id);
-        QBInvoice_Controller.callFromFlow(invIds);
+        QBInvoiceSync_Controller.callFromFlow(invIds);
         
         Test.stopTest();
 
@@ -196,7 +196,6 @@ public with sharing class QBCommonController_Test {
                 oppLineItem = new OpportunityLineItem();
                 oppLineItem.OpportunityId = opp.Id;
                 oppLineItem.Product2Id = prod.Id;
-                oppLineItem.Product_Cost__c = (oppItems.size() + 1) * 10;
                 oppLineItem.UnitPrice = (oppItems.size() + 1) * 20;
                 oppLineItem.Quantity = (oppItems.size() + 1);
                 oppLineItem.Description = prod.Description;
@@ -283,7 +282,7 @@ public with sharing class QBCommonController_Test {
 
 
         //get opportunity lineitems
-        List<OpportunityLineItem> oppLineItems = [SELECT Id, OpportunityId, Product2Id, Product_Cost__c, UnitPrice, Quantity, Description
+        List<OpportunityLineItem> oppLineItems = [SELECT Id, OpportunityId, Product2Id, UnitPrice, Quantity, Description
         FROM OpportunityLineItem 
         WHERE OpportunityId =: opp.Id];
         for (OpportunityLineItem oppLineItem : oppLineItems) {
