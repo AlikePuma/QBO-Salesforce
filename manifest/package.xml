@@ -81,14 +81,11 @@
         <name>CustomMetadata</name>
     </types>
     <types>
-        <members>Account</members>
         <members>Invoice__c</members>
         <members>Purchase_Order_Item__c</members>
         <members>Purchase_Order__c</members>
         <members>QBData__c</members>
         <members>QBO_Metadata__mdt</members>
-        <members>WorkOrder</members>
-        <members>WorkOrderLineItem</members>
         <name>CustomObject</name>
     </types>
 <types>
@@ -101,16 +98,13 @@
     </types>
 
     <types>
+<members>Account-SoClo Account</members>
         <members>Invoice__c-Invoice Layout</members>
-        <members>Opportunity-Opportunity Layout</members>
-        <members>OpportunityLineItem-Opportunity Product Layout</members>
+        <members>Product2-SoClo Product</members>
         <members>Purchase_Order_Item__c-Purchase Order Item Layout</members>
         <members>Purchase_Order__c-Purchase Order Layout</members>
-        <members>QBO_Metadata__mdt-QBO Metadata Layout</members>
-        <members>WorkOrder-FSL Work Order Layout</members>
-        <members>WorkOrder-Work Order Layout</members>
-        <members>WorkOrderLineItem-FSL Work Order Line Item Layout</members>
-        <members>WorkOrderLineItem-Work Order Line Item Layout</members>
+        <members>WorkOrder-SoClo Work Order</members>
+        <members>WorkOrderLineItem-SoClo Work Order Line Item</members>
         <name>Layout</name>
     </types>
     <types>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
     <authorizeUrl>https://appcenter.intuit.com/connect/oauth2</authorizeUrl>
-    <consumerKey>ABviQvpMJDQJKN4RkycrreGzbxNsDgtlLm7GoJPr9kgTFjdQYn</consumerKey>
-    <consumerSecret>NDPKQ92vZvH4/D45TbfAoBEnLMeeBVrSeashYLOf/dKzkYmHrF4dv3BBGPdiC2rX</consumerSecret>
+    <consumerKey>ABGFue1LPslPj8npaB8ddn2royiGYmtodDyBXHz42jBH3A0f8Z</consumerKey>
+    <consumerSecret>a8tQG/WFjnS8cagx4HtBszSx/Xr63aAR86//RxRLE+K/8b13XbOwgnBBGPdiC2rX</consumerSecret>
     <defaultScopes>com.intuit.quickbooks.accounting</defaultScopes>
     <friendlyName>QBO</friendlyName>
     <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
