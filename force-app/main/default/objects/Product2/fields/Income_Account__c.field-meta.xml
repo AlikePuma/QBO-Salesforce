@@ -11,49 +11,44 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>123</fullName>
+                <fullName>Billable Expense Income</fullName>
                 <default>false</default>
                 <label>Billable Expense Income</label>
             </value>
             <value>
-                <fullName>93</fullName>
+                <fullName>Discounts</fullName>
                 <default>false</default>
                 <label>Discounts</label>
             </value>
             <value>
-                <fullName>94</fullName>
+                <fullName>Gross Receipts</fullName>
                 <default>false</default>
                 <label>Gross Receipts</label>
             </value>
             <value>
-                <fullName>95</fullName>
+                <fullName>Refunds-Allowances</fullName>
                 <default>false</default>
                 <label>Refunds-Allowances</label>
             </value>
             <value>
-                <fullName>96</fullName>
+                <fullName>Sales</fullName>
                 <default>true</default>
                 <label>Sales</label>
             </value>
             <value>
-                <fullName>125</fullName>
+                <fullName>Sales of Product Income</fullName>
                 <default>false</default>
                 <label>Sales of Product Income</label>
             </value>
             <value>
-                <fullName>121</fullName>
+                <fullName>Services</fullName>
                 <default>false</default>
                 <label>Services</label>
             </value>
             <value>
-                <fullName>132</fullName>
+                <fullName>Uncategorized Income</fullName>
                 <default>false</default>
                 <label>Uncategorized Income</label>
-            </value>
-            <value>
-                <fullName>135</fullName>
-                <default>false</default>
-                <label>Unapplied Cash Payment Income</label>
             </value>
         </valueSetDefinition>
     </valueSet>

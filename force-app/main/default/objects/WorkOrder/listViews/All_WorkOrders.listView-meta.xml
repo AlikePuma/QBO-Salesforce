@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All_WorkOrders</fullName>
-    <columns>Name</columns>
-    <columns>Subject</columns>
-    <columns>Account</columns>
-    <columns>Status</columns>
-    <columns>IsClosed</columns>
-    <columns>Doorpack_WorkOrdNo__c</columns>
-    <columns>Doorpack_AssignName__c</columns>
-    <columns>Doorpack_TotalwithTax__c</columns>
-    <columns>Doorpack_WOType__c</columns>
-    <columns>StartDate</columns>
-    <columns>EndDate</columns>
-    <columns>Doorpack_Created_Date__c</columns>
-    <columns>CreatedDate</columns>
     <filterScope>Everything</filterScope>
     <label>All Work Orders</label>
 </ListView>
