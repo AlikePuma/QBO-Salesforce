@@ -11,42 +11,42 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>161</fullName>
+                <fullName>Billable Expense Income</fullName>
                 <default>false</default>
                 <label>Billable Expense Income</label>
             </value>
             <value>
-                <fullName>129</fullName>
+                <fullName>Discounts</fullName>
                 <default>false</default>
                 <label>Discounts</label>
             </value>
             <value>
-                <fullName>130</fullName>
+                <fullName>Gross Receipts</fullName>
                 <default>false</default>
                 <label>Gross Receipts</label>
             </value>
             <value>
-                <fullName>131</fullName>
+                <fullName>Refunds-Allowances</fullName>
                 <default>false</default>
                 <label>Refunds-Allowances</label>
             </value>
             <value>
-                <fullName>132</fullName>
+                <fullName>Sales</fullName>
                 <default>true</default>
                 <label>Sales</label>
             </value>
             <value>
-                <fullName>164</fullName>
+                <fullName>Sales of Product Income</fullName>
                 <default>false</default>
                 <label>Sales of Product Income</label>
             </value>
             <value>
-                <fullName>157</fullName>
+                <fullName>Services</fullName>
                 <default>false</default>
                 <label>Services</label>
             </value>
             <value>
-                <fullName>160</fullName>
+                <fullName>Uncategorized Income</fullName>
                 <default>false</default>
                 <label>Uncategorized Income</label>
             </value>
