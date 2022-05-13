@@ -11,42 +11,42 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Billable Expense Income</fullName>
-                <default>false</default>
-                <label>Billable Expense Income</label>
-            </value>
-            <value>
-                <fullName>Discounts</fullName>
-                <default>false</default>
-                <label>Discounts</label>
-            </value>
-            <value>
-                <fullName>Gross Receipts</fullName>
-                <default>false</default>
-                <label>Gross Receipts</label>
-            </value>
-            <value>
-                <fullName>Refunds-Allowances</fullName>
-                <default>false</default>
-                <label>Refunds-Allowances</label>
-            </value>
-            <value>
-                <fullName>Sales</fullName>
+                <fullName>184</fullName>
                 <default>true</default>
                 <label>Sales</label>
             </value>
             <value>
-                <fullName>Sales of Product Income</fullName>
-                <default>false</default>
-                <label>Sales of Product Income</label>
-            </value>
-            <value>
-                <fullName>Services</fullName>
+                <fullName>209</fullName>
                 <default>false</default>
                 <label>Services</label>
             </value>
             <value>
-                <fullName>Uncategorized Income</fullName>
+                <fullName>211</fullName>
+                <default>false</default>
+                <label>Billable Expense Income</label>
+            </value>
+            <value>
+                <fullName>181</fullName>
+                <default>false</default>
+                <label>Discounts</label>
+            </value>
+            <value>
+                <fullName>182</fullName>
+                <default>false</default>
+                <label>Gross Receipts</label>
+            </value>
+            <value>
+                <fullName>183</fullName>
+                <default>false</default>
+                <label>Refunds-Allowances</label>
+            </value>
+            <value>
+                <fullName>216</fullName>
+                <default>false</default>
+                <label>Sales of Product Income</label>
+            </value>
+            <value>
+                <fullName>212</fullName>
                 <default>false</default>
                 <label>Uncategorized Income</label>
             </value>
