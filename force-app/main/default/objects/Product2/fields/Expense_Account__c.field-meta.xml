@@ -11,112 +11,112 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Advertising</fullName>
+                <fullName>185</fullName>
                 <default>false</default>
                 <label>Advertising</label>
             </value>
             <value>
-                <fullName>Bank Charges</fullName>
+                <fullName>186</fullName>
                 <default>false</default>
                 <label>Bank Charges</label>
             </value>
             <value>
-                <fullName>Commissions &amp; fees</fullName>
+                <fullName>187</fullName>
                 <default>false</default>
                 <label>Commissions &amp; fees</label>
             </value>
             <value>
-                <fullName>Disposal Fees</fullName>
+                <fullName>208</fullName>
                 <default>false</default>
                 <label>Disposal Fees</label>
             </value>
             <value>
-                <fullName>Dues &amp; Subscriptions</fullName>
+                <fullName>188</fullName>
                 <default>false</default>
                 <label>Dues &amp; Subscriptions</label>
             </value>
             <value>
-                <fullName>Insurance</fullName>
+                <fullName>189</fullName>
                 <default>false</default>
                 <label>Insurance</label>
             </value>
             <value>
-                <fullName>Insurance - Liability</fullName>
+                <fullName>206</fullName>
                 <default>false</default>
                 <label>Insurance - Liability</label>
             </value>
             <value>
-                <fullName>Legal &amp; Professional Fees</fullName>
+                <fullName>190</fullName>
                 <default>false</default>
                 <label>Legal &amp; Professional Fees</label>
             </value>
             <value>
-                <fullName>Meals and Entertainment</fullName>
+                <fullName>191</fullName>
                 <default>false</default>
                 <label>Meals and Entertainment</label>
             </value>
             <value>
-                <fullName>Office Expenses</fullName>
+                <fullName>193</fullName>
                 <default>false</default>
                 <label>Office Expenses</label>
             </value>
             <value>
-                <fullName>Promotional</fullName>
+                <fullName>194</fullName>
                 <default>false</default>
                 <label>Promotional</label>
             </value>
             <value>
-                <fullName>Purchases</fullName>
-                <default>true</default>
+                <fullName>215</fullName>
+                <default>false</default>
                 <label>Purchases</label>
             </value>
             <value>
-                <fullName>Rent or Lease</fullName>
+                <fullName>195</fullName>
                 <default>false</default>
                 <label>Rent or Lease</label>
             </value>
             <value>
-                <fullName>Repair &amp; Maintenance</fullName>
+                <fullName>196</fullName>
                 <default>false</default>
                 <label>Repair &amp; Maintenance</label>
             </value>
             <value>
-                <fullName>Stationery &amp; Printing</fullName>
+                <fullName>197</fullName>
                 <default>false</default>
                 <label>Stationery &amp; Printing</label>
             </value>
             <value>
-                <fullName>Supplies</fullName>
+                <fullName>198</fullName>
                 <default>false</default>
                 <label>Supplies</label>
             </value>
             <value>
-                <fullName>Taxes &amp; Licenses</fullName>
+                <fullName>199</fullName>
                 <default>false</default>
                 <label>Taxes &amp; Licenses</label>
             </value>
             <value>
-                <fullName>Tools</fullName>
+                <fullName>207</fullName>
                 <default>false</default>
                 <label>Tools</label>
             </value>
             <value>
-                <fullName>Travel</fullName>
+                <fullName>200</fullName>
                 <default>false</default>
                 <label>Travel</label>
             </value>
             <value>
-                <fullName>Travel Meals</fullName>
+                <fullName>201</fullName>
                 <default>false</default>
                 <label>Travel Meals</label>
             </value>
             <value>
-                <fullName>Uncategorized Expense</fullName>
+                <fullName>214</fullName>
                 <default>false</default>
                 <label>Uncategorized Expense</label>
             </value>
             <value>
-                <fullName>Utilities</fullName>
+                <fullName>202</fullName>
                 <default>false</default>
                 <label>Utilities</label>
             </value>

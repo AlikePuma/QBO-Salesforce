@@ -13,7 +13,7 @@
 		<members>QBInvoiceJSON</members>
 		<members>QBInvoiceQueryJSON</members>
 		<members>QBInvoiceResponseJSON</members>
-		<members>QBInvoice_Controller</members>
+		<members>QBInvoiceSync_Controller</members>
 		<members>QBItemJSON</members>
 		<members>QBItemJSON_Test</members>
 		<members>QBItemQueryJSON</members>
@@ -63,6 +63,7 @@
 		<members>Product2.Expense_Account__c</members>
 		<members>Product2.Income_Account__c</members>
 		<members>Product2.QBO_Id__c</members>
+		<members>Product2.QBO_SyncToken__c</members>
 		<members>Purchase_Order_Item__c.Amount__c</members>
 		<members>Purchase_Order_Item__c.Billable_Status__c</members>
 		<members>Purchase_Order_Item__c.Product__c</members>
@@ -91,6 +92,15 @@
 		<members>QBData__c</members>
 		<members>QBO_Metadata__mdt</members>
 		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>Invoice__c</members>
+		<members>Purchase_Order__c</members>
+		<name>CustomTab</name>
+	</types>
+	<types>
+		<members>Quickbooks_UtilityBar</members>
+		<name>FlexiPage</name>
 	</types>
 	<types>
 		<members>SoClo_Sync_SF_Account_To_QB_Customer</members>
