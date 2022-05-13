@@ -1,2 +1,0 @@
-<apex:page standardcontroller="Purchase_Order__c" extensions="QBPOSync_Controller" action="{!syncQB}">
-</apex:page>

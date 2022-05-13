@@ -37,13 +37,6 @@
 		<name>ApexClass</name>
 	</types>
 	<types>
-		<members>QBCustomerSync_VF</members>
-		<members>QBInvoice_VF</members>
-		<members>QBProductSync_VF</members>
-		<members>QBPurchaseOrderSync_VF</members>
-		<name>ApexPage</name>
-	</types>
-	<types>
 		<members>QBO</members>
 		<name>AuthProvider</name>
 	</types>
