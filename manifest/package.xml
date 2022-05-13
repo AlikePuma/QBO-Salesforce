@@ -37,8 +37,19 @@
 		<name>ApexClass</name>
 	</types>
 	<types>
+		<members>QBCustomerSync_VF</members>
+		<members>QBInvoice_VF</members>
+		<members>QBProductSync_VF</members>
+		<members>QBPurchaseOrderSync_VF</members>
+		<name>ApexPage</name>
+	</types>
+	<types>
 		<members>QBO</members>
 		<name>AuthProvider</name>
+	</types>
+	<types>
+		<members>QB</members>
+		<name>ContentAsset</name>
 	</types>
 	<types>
 		<members>Quickbooks</members>
@@ -94,11 +105,6 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
-		<members>Invoice__c</members>
-		<members>Purchase_Order__c</members>
-		<name>CustomTab</name>
-	</types>
-	<types>
 		<members>Quickbooks_UtilityBar</members>
 		<name>FlexiPage</name>
 	</types>
@@ -119,6 +125,12 @@
 		<members>WorkOrder-SoClo Work Order</members>
 		<members>WorkOrderLineItem-SoClo Work Order Line Item</members>
 		<name>Layout</name>
+	</types>
+	<types>
+		<members>Expenses__c.All</members>
+		<members>Invoice__c.All</members>
+		<members>Purchase_Order__c.All</members>
+		<name>ListView</name>
 	</types>
 	<types>
 		<members>QBO</members>
