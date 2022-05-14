@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
+		<members>CustomNotification</members>
+		<members>CustomNotification_Test</members>
+		<members>GeneralUtility</members>
+		<members>GeneralUtility_Test</members>
+		<members>OpportunitiesToWorkOrder_Controller</members>
+		<members>OpportunitiesToWorkOrder_Test</members>
 		<members>QBBatchRequestJSON</members>
 		<members>QBBatchRequestJSON_Test</members>
 		<members>QBBatchResponseJSON</members>
 		<members>QBBatchResponseJSON_Test</members>
+		<members>QBCallOutMock</members>
 		<members>QBCallout</members>
+		<members>QBCommonController_Test</members>
 		<members>QBCustomerJSON</members>
+		<members>QBCustomerJSON_Test</members>
 		<members>QBCustomerResponseJSON</members>
+		<members>QBCustomerResponseJSON_Test</members>
 		<members>QBCustomerSync_Controller</members>
 		<members>QBException</members>
 		<members>QBInvoiceJSON</members>
+		<members>QBInvoiceJSON_Test</members>
 		<members>QBInvoiceQueryJSON</members>
 		<members>QBInvoiceResponseJSON</members>
 		<members>QBInvoiceSync_Controller</members>
@@ -29,12 +40,23 @@
 		<members>QBPOQueryJSON</members>
 		<members>QBPOResponseJSON</members>
 		<members>QBPOResponseJSON_Test</members>
+		<members>QBPOSync_Controller</members>
 		<members>QBProductAndWoliWrapper</members>
 		<members>QBProductSync_Controller</members>
-		<members>QBRefreshJSON</members>
 		<members>QBRefreshJSON_Test</members>
+		<members>QBRefreshJSON</members>
+		<members>QBVendorJSON_Test</members>
+		<members>QBVendorJSON</members>
+		<members>QBVendorQueryJSON_Test</members>
+		<members>QBVendorQueryJSON</members>
+		<members>QBVendorResponseJSON_Test</members>
+		<members>QBVendorResponseJSON</members>
 		<members>QBWorkOrder_Controller</members>
 		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>OpportunitiesToWorkOrders_VFPage</members>
+		<name>ApexPage</name>
 	</types>
 	<types>
 		<members>QBO</members>
@@ -64,10 +86,13 @@
 		<members>Invoice__c.Terms__c</members>
 		<members>Invoice__c.Total__c</members>
 		<members>Invoice__c.Work_Order__c</members>
-		<members>Product2.Expense_Account__c</members>
-		<members>Product2.Income_Account__c</members>
+		<members>Opportunity.Work_Orders_Created__c</members>
+		<members>OpportunityLineItem.Cost_Per_Unit__c</members>
+		<members>Opportunity.Product_Cost__c</members>
 		<members>Product2.QBO_Id__c</members>
 		<members>Product2.QBO_SyncToken__c</members>
+		<members>Product2.Income_Account__c</members>
+		<members>Product2.Expense_Account__c</members>
 		<members>Purchase_Order_Item__c.Amount__c</members>
 		<members>Purchase_Order_Item__c.Billable_Status__c</members>
 		<members>Purchase_Order_Item__c.Product__c</members>
@@ -79,21 +104,15 @@
 		<members>Purchase_Order__c.QBO_SyncToken__c</members>
 		<members>Purchase_Order__c.Vendor_Account__c</members>
 		<members>WorkOrder.Opportunity__c</members>
-		<members>WorkOrder.Total_Cost__c</members>
-		<members>WorkOrder.Total_Profit__c</members>
-		<members>WorkOrderLineItem.Total_Line_Cost__c</members>
 		<members>WorkOrderLineItem.Unit_Cost__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
-		<members>QBO_Metadata__mdt.Default</members>
-		<name>CustomMetadata</name>
-	</types>
-	<types>
 		<members>Invoice__c</members>
+		<members>Opportunity</members>
+		<members>OpportunityLineItem</members>
 		<members>Purchase_Order_Item__c</members>
 		<members>Purchase_Order__c</members>
-		<members>QBData__c</members>
 		<members>QBO_Metadata__mdt</members>
 		<name>CustomObject</name>
 	</types>
@@ -102,11 +121,11 @@
 		<name>FlexiPage</name>
 	</types>
 	<types>
+		<members>SoClo_Create_Invoice_From_Work_Order</members>
 		<members>SoClo_Sync_SF_Account_To_QB_Customer</members>
-		<members>SoClo_Sync_SF_Account_To_QB_Customer_Vendor</members>
 		<members>SoClo_Sync_SF_Invoice_To_QB_Invoice</members>
-		<members>SoClo_Sync_SF_PO_To_QB_PO</members>
 		<members>SoClo_Sync_SF_Product_To_QB_Item</members>
+		<members>SoClo_Sync_SF_PO_To_QB_PO</members>
 		<name>Flow</name>
 	</types>
 	<types>
