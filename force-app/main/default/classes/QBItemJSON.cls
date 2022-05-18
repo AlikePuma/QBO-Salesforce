@@ -1,13 +1,14 @@
 public class QBItemJSON {
-
-	public Boolean TrackQtyOnHand;
+	public String Id;
+	public String SyncToken;
 	public String Name;
+	public String InvStartDate;
+	public String Type;
+	public Boolean TrackQtyOnHand;
 	public Double UnitPrice;
 	public Boolean Taxable;
 	public IncomeAccountRef IncomeAccountRef;
 	public IncomeAccountRef AssetAccountRef;
-	public String InvStartDate;
-	public String Type;
 	public ExpenseAccountRef ExpenseAccountRef;
 
 	public class IncomeAccountRef {

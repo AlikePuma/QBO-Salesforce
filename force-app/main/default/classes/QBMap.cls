@@ -6,6 +6,8 @@ public class QBMap {
      * @return the QB json that can be used to CRUD a customer in QBO
      */
     public static String mapAccountData(Account acc){
+        System.debug('********** In QBMap.mapAccountData');
+
         QBCustomerJSON.Customer customer = new QBCustomerJSON.Customer();
 
         //Map given account fields
@@ -50,6 +52,7 @@ public class QBMap {
         return JSON.serialize(customer, True).replace('"Long_x":', '"Long":');
     }
 
+
     public static String mapProductsToBatchItems(List<QBProductAndWoliWrapper> wrappers){
         QBBatchRequestJSON batch;
 
@@ -86,12 +89,14 @@ public class QBMap {
         return payload;
     }
 
+
     /**
      * Map an invoice from Salesforce to QBO JSON
      * @param inv The invoice that is used for the mapping
      * @return The json String that is used for the body of the request callout 
      */
     public static String mapInvoice(Invoice__c inv, List<WorkOrderLineItem> woliList){
+        System.debug('********** In QBMap.mapInvoice');
 
         //////////////////////////
         // INVOICE TOP LEVEL ITEMS
@@ -260,7 +265,8 @@ public class QBMap {
      * @return The json String that is used for the body of the request callout 
      */
     public static String mapPurchaseOrder(Purchase_Order__c po, List<Purchase_Order_Item__c> poliList){
-        
+        System.debug('********** In QBMap.mapPurchaseOrder');
+       
         /////////////////////////////////
         // PURCHASE ORDER TOP LEVEL ITEMS
         /////////////////////////////////
@@ -287,10 +293,10 @@ public class QBMap {
 
         //*****  AP ACCOUNT REFERENCE  *****//
         QBPOJSON.APAccountRef APAccountRef = new QBPOJSON.APAccountRef(); 
-        // TODO 
-        //APAccountRef.value = '135';
-        //APAccountRef.Name = 'Accounts Payable (A/P)';
-        //purchaseOrderObj.APAccountRef = APAccountRef;
+        // TODO:
+        APAccountRef.value = '136';  //NOTE: change this per org but it's suggested to hardcode this as most QB customers only have 1 AP and changeing regularly causes some customer relationship issues
+        APAccountRef.Name = 'Accounts Payable (A/P)';
+        purchaseOrderObj.APAccountRef = APAccountRef;
 
         //*****  SHIPPING ADDRESS  *****//
         QBPOJSON.ShipAddr shipAddy = new QBPOJSON.ShipAddr();
@@ -332,24 +338,25 @@ public class QBMap {
             line = new QBPOJSON.Line();
             line.Amount = poli.Unit_Cost__c;
             line.DetailType = 'ItemBasedExpenseLineDetail';    
-            line.Id = poli.Id;
+            line.Id = poli.Name.split('-')[1];
             
-            // Start ItemBasedExpenseLineDetail
+            
+            // Start ItemBasedExpenseLineDetail NOTE: OTHER IS ACCOUNT BASED
             ItemBasedExpenseLineDetail = new QBPOJSON.ItemBasedExpenseLineDetail();
             ItemBasedExpenseLineDetail.BillableStatus = String.valueOf(poli.Billable_Status__c).deleteWhitespace(); // turns 'Not Billable' into 'NotBillable'
             ItemBasedExpenseLineDetail.UnitPrice = poli.Unit_Cost__c;
             ItemBasedExpenseLineDetail.Qty = poli.Quantity__c;
-
+            ItemBasedExpenseLineDetail.BillableStatus = 'NotBillable';  //NOTE: make programmatic
+            
             // ItemRef: product Name and QBO Id
             QBPOJSON.ItemRef itemRef = new QBPOJSON.ItemRef(); 
-            itemRef.name = poli.Product__r.Name;
             itemRef.value = poli.Product__r.QBO_Id__c;
             ItemBasedExpenseLineDetail.ItemRef = itemref;
 
             // Customer Reference
             QBPOJSON.ItemRef customerRef = new QBPOJSON.ItemRef();
             customerRef.value = poli.Purchase_Order__r.Vendor_Account__r.QBO_Id__c;
-            ItemBasedExpenseLineDetail.CustomerRef = customerRef;
+            //ItemBasedExpenseLineDetail.CustomerRef = customerRef;  //NOTE: currently not being added to object
 
             // Tax Code Reference
             QBPOJSON.TaxCodeRef taxCodeRef = new QBPOJSON.TaxCodeRef();
@@ -367,53 +374,75 @@ public class QBMap {
         return JSON.serialize(purchaseOrderObj, True).replace('"Long_x":', '"Long":');
     }
 
-        /**
+        
+    /**
      * Map an product from Salesforce to QBO JSON
      * @param p The product that is used for the mapping
      * @return The json String that is used for the body of the request callout 
      */
     public static String mapItem(Product2 p){
+        System.debug('********** In QBMap.mapItem');
+        
         //Initialize item object
         QBItemJSON itemObj = new QBItemJSON();
         itemObj.IncomeAccountRef = new QBItemJSON.IncomeAccountRef();
         itemObj.TrackQtyOnHand = false;
         itemObj.Name = p.Name;
         itemObj.Type = 'NonInventory';
-
-        QBItemJSON.IncomeAccountRef IncomeAccountRef = new QBItemJSON.IncomeAccountRef();
-        IncomeAccountRef.value = p.Income_Account__c;
-        //IncomeAccountRef.name = toLabel(p.Income_Account__c);
-        itemObj.IncomeAccountRef = IncomeAccountRef;
-
-        QBItemJSON.ExpenseAccountRef ExpenseAccountRef = new QBItemJSON.ExpenseAccountRef();
-        ExpenseAccountRef.value = p.Expense_Account__c;
-        //ExpenseAccountRef.name = toLabel(p.Expense_Account__c);
-        itemObj.ExpenseAccountRef = ExpenseAccountRef;
-
         
+        // Set QBO ID and Sync Token to update instead of create 
+        if(!String.isBlank(p.QBO_Id__c)){
+            itemObj.Id = p.QBO_Id__c;
+            System.debug('SF Product QBO Id: ' + p.QBO_Id__c);
+        }
+
+        if(!String.isBlank(p.QBO_SyncToken__c)){
+            itemObj.SyncToken = p.QBO_SyncToken__c;
+        }
+
+        // Set Income and Expense Account
+        if(p.Sell_Product_Service__c){
+            QBItemJSON.IncomeAccountRef IncomeAccountRef = new QBItemJSON.IncomeAccountRef();
+            IncomeAccountRef.value = p.Income_Account__c;
+            itemObj.IncomeAccountRef = IncomeAccountRef;
+            System.debug('SF Income Account Id: ' + p.Income_Account__c);
+        }
+        
+        if(p.Purchase_Product_Service__c){
+            QBItemJSON.ExpenseAccountRef ExpenseAccountRef = new QBItemJSON.ExpenseAccountRef();
+            ExpenseAccountRef.value = p.Expense_Account__c;
+            itemObj.ExpenseAccountRef = ExpenseAccountRef;
+            System.debug('SF Expense Account Id: ' + p.Expense_Account__c);
+        }
+
         return JSON.serialize(itemObj, True).replace('"Long_x":', '"Long":');
     }
 
-            /**
+    
+    /**
      * Map the SF Account data to the QB vendor JSON
      * @param acc The account data that is mapped
      * @return the QB json that can be used to CRUD a customer in QBO
      */
     public static String mapAccountDataVendor(Account acc){
         QBVendorJSON.Vendor vendor = new QBVendorJSON.Vendor();
+
+        vendor.Id = acc.QBO_Id__c;
+        vendor.SyncToken = acc.QBO_SyncToken__c;
+
         //Create Primary Phone
         QBVendorJSON.PrimaryPhone phone = new QBVendorJSON.PrimaryPhone ();
         phone.FreeFormNumber = acc.Phone;
         vendor.PrimaryPhone = phone;
+        
         QBVendorJSON.PrimaryEmailAddr email = new QBVendorJSON.PrimaryEmailAddr ();
-        email.Address = 'joshua@southerncloud.com'; //does not have correct mapping
+        email.Address = acc.contact__r.email; //does not have correct mapping
         vendor.PrimaryEmailAddr = email;
         //QBVendorJSON.WebAddr webAddress = new QBVendorJSON.WebAddr ();
         //webAddress.URI = 'www.test.com';
         //vendor.WebAddr = webAddress;
-        QBVendorJSON.PrimaryPhone primaryPhone = new QBVendorJSON.PrimaryPhone ();
-        primaryPhone.FreeFormNumber = '321-222-2222';
-        vendor.PrimaryPhone = primaryPhone;
+        
+
         //Create Billing Address
         QBVendorJSON.BillAddr billAddy = new QBVendorJSON.BillAddr();
         billAddy.City = acc.BillingCity;

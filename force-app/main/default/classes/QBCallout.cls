@@ -7,6 +7,8 @@ public class QBCallout {
 
 
     public QBBatchResponseJSON createQbBatchCall(List<QBProductAndWoliWrapper> wrappers){
+        System.debug('********** In QBCallout.createQbBatchCall()');
+
         final String API_CALL = 'batch';
         
         //Map inv data to QB Invoice JSON
@@ -41,6 +43,8 @@ public class QBCallout {
 
 
     public QBCustomerJSON getCustomer(Account acc){
+        System.debug('********** In QBCallout.getCustomer()');
+
         if(acc == null){
             Throw new NullPointerException();
         }
@@ -68,6 +72,8 @@ public class QBCallout {
      * @param acc Account used to create  
      */
     public QBCustomerResponseJSON createCustomerCall(Account acc){
+        System.debug('********** In QBCallout.createCustomerCall()');
+
         //Map acc data to QB Customer JSON
         String body = QBMap.mapAccountData(acc);
 
@@ -85,6 +91,8 @@ public class QBCallout {
 
 
     public QBInvoiceQueryJSON getInvoice(Invoice__c inv){
+        System.debug('********** In QBCallout.getInvoice()');
+
         if(inv == null){
             Throw new NullPointerException();
         }
@@ -113,6 +121,8 @@ public class QBCallout {
      * @return Response object     
      */
     public QBInvoiceResponseJSON createInvoiceFromWorkOrderCall(Invoice__c inv, List<WorkOrderLineItem> woliList){
+        System.debug('********** In QBCallout.createInvoiceFromWorkOrderCall()');
+        
         String apiCall = 'invoice';
         String method = 'POST';
 
@@ -131,6 +141,8 @@ public class QBCallout {
     
 
     public QBPOQueryJSON getPurchaseOrder(Purchase_Order__c po){
+        System.debug('********** In QBCallout.getPurchaseOrder()');
+
         if(po == null){
             Throw new NullPointerException();
         }
@@ -161,7 +173,8 @@ public class QBCallout {
      * @return Response object     
      */
     public QBPOResponseJSON createPurchaseOrderCall(Purchase_Order__c po, List<Purchase_Order_Item__c> poli){
-        
+        System.debug('********** In QBCallout.createPurchaseOrderCall()');
+
         //Map inv data to QB purchase order JSON
         String body = QBMap.mapPurchaseOrder(po,poli);
         String custPath = '/v3/company/'+ QBData.Company_Id__c + '/purchaseorder?minorversion=' + QBData.minorversion__c;
@@ -177,17 +190,22 @@ public class QBCallout {
 
 
     public QBItemQueryJSON getItem(Product2 p){
-        //Initilize query
-        String query = 'Select+*+from+Item+where+Name=+\'' + p.Name.replaceAll(' ', '+').replaceAll('"', '%22') +'\'' ;     
-        if(p.QBO_Id__c != null){
-            query = 'select+*+from+Item+where+Id=+\'' + p.QBO_Id__c + '\'';
-        }
-        //String query = 'select+*+from+Item+maxresults+1';
+        System.debug('********** In QBCallout.getItem()');
+
         if(p == null){
             Throw new NullPointerException();
         }
-        system.debug(query);
+
         //Initilize query
+        String query = 'select * from Item where ';
+        if(!String.isBlank(p.QBO_Id__c)){  // Search by Id or name
+            query += 'Id=\'' + p.QBO_Id__c + '\'';
+        } else {
+            query += 'Name=\'' + p.Name + '\'';    
+        }
+        query = EncodingUtil.urlEncode(query, 'UTF-8');
+        system.debug(query);
+
         String custPath = '/v3/company/'+ QBData.Company_Id__c +'/query?query='+query+'&minorversion='+QBData.minorversion__c;
         String method = 'GET';
         String body = null;
@@ -205,12 +223,14 @@ public class QBCallout {
         return json;
     }
 
-        /**
+        
+    /**
      * Create an product for QBO from Product2 object
      * @param p The product that is needed to create an item in QBO
      * @return Response object     
      */
     public QBItemResponseJSON createItemCall(Product2 p){
+        System.debug('********** In QBCallout.createItemCall()');
         
         //Map product data to QB item JSON
         String body = QBMap.mapItem(p);
@@ -226,7 +246,10 @@ public class QBCallout {
         return QBItemResponseJSON.parse(res.getBody());
     }
 
+
     public QBVendorJSON getVendor(Account acc){
+        System.debug('********** In QBCallout.getVendor()');
+
         if(acc == null){
             Throw new NullPointerException();
         }
@@ -234,7 +257,7 @@ public class QBCallout {
         String query = 'Select+*+from+Vendor+where+' +
                              'DisplayName=+\'' + acc.Name.replaceAll(' ', '+') +'\'' ;
         if(acc.QBO_Id__c != null){
-            query = 'select+*+from+Vendor+where+job=False+and+Id=+\'' + Acc.QBO_Id__c + '\'';
+            query = 'select+*+from+Vendor+where+Id=+\'' + Acc.QBO_Id__c + '\'';
         }
         system.debug(query);
         String custPath = '/v3/company/'+ QBData.Company_Id__c +'/query?query='+query+'&minorversion='+QBData.minorversion__c;
@@ -251,11 +274,13 @@ public class QBCallout {
         return json;
     }
 
+
     /**
      * Create a QB vendor using account object
      * @param acc Account used to create  
      */
     public QBVendorResponseJSON createVendorCall(Account acc){
+        System.debug('********** In QBCallout.createVendorCall()');
 
         //Map acc data to QB Customer JSON
         String body = QBMap.mapAccountDataVendor(acc);
@@ -272,6 +297,7 @@ public class QBCallout {
         return json;
     }
         
+
     /**
      * Throws exception if there is an error in the callout
      * @param body The json response from the QB callout
@@ -279,10 +305,15 @@ public class QBCallout {
     private void handleResponseError(String body){
         QBOErrorJSON error = QBOErrorJSON.parse(body);
         if(error != null){
-            if(error.Fault != null && error.Fault.Error != null && error.Fault.Error.size() > 0)
-            Throw new QBException(String.valueOf(error.Fault.Error[0]));
+            if(error.Fault != null && error.Fault.Error != null && error.Fault.Error.size() > 0){
+                System.debug(error.Fault.Error[0]);
+                Throw new QBException(String.valueOf(error.Fault.Error[0]));
+            }
+            
         }
     }
+
+
     /**
      * Create an http request
      * @param namCred The named credential used for the request

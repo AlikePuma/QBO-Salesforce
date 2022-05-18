@@ -3,7 +3,7 @@ public with sharing class QBPOSync_Controller {
     public static void callFromFlow(List<Id> poId){
         Purchase_Order__c po = [SELECT Id,
                                 Name,
-                                (SELECT Id,Product__c,Product__r.QBO_Id__c, Unit_Cost__c, 
+                                (SELECT Id, Name, Product__c,Product__r.QBO_Id__c, Unit_Cost__c, 
                                 Quantity__c, Billable_Status__c,Product__r.Name, Purchase_Order__r.Vendor_Account__r.QBO_Id__c
                                 FROM Purchase_Order_Items__r
                                 ), 

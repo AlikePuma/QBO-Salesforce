@@ -3,7 +3,7 @@
     <authorizeUrl>https://appcenter.intuit.com/connect/oauth2</authorizeUrl>
     <consumerKey>ABGFue1LPslPj8npaB8ddn2royiGYmtodDyBXHz42jBH3A0f8Z</consumerKey>
     <consumerSecret>a8tQG/WFjnS8cagx4HtBszSx/Xr63aAR86//RxRLE+K/8b13XbOwgnBBGPdiC2rX</consumerSecret>
-    <defaultScopes>com.intuit.quickbooks.accounting</defaultScopes>
+    <defaultScopes>com.intuit.quickbooks.accounting com.intuit.quickbooks.payment openid profile email phone address</defaultScopes>
     <friendlyName>QBO</friendlyName>
     <includeOrgIdInIdentifier>false</includeOrgIdInIdentifier>
     <providerType>OpenIdConnect</providerType>
