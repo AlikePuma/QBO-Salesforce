@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Expense_Account_not_None</fullName>
+    <active>true</active>
+    <errorConditionFormula>IF(
+				Purchase_Product_Service__c = true,
+				ISPICKVAL(Expense_Account__c, &apos;&apos;),
+				false  
+)</errorConditionFormula>
+    <errorMessage>If Purchase Product/Service is checked, you must specify an Expense Account</errorMessage>
+</ValidationRule>
