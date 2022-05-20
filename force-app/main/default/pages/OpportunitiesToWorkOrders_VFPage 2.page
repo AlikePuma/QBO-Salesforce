@@ -1,5 +1,0 @@
-<apex:page standardController="Opportunity" recordSetVar="opps" extensions="OpportunitiesToWorkOrder_Controller" action="{!createWorkOrders}" lightningStylesheets="True">
-    
-   <apex:outputLabel >You will get a notification when the process is complete.</apex:outputLabel>
-    
-</apex:page>
