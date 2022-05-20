@@ -336,7 +336,7 @@ public class QBMap {
 
             // Top level line object
             line = new QBPOJSON.Line();
-            line.Amount = poli.Unit_Cost__c;
+            line.Amount = poli.Amount__c;
             line.DetailType = 'ItemBasedExpenseLineDetail';    
             line.Id = poli.Name.split('-')[1];
             
