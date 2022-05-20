@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
-    <flowDefinition>SoClo_Sync_SF_Product_To_QB_Item</flowDefinition>
-    <label>Sync With Quickbooks</label>
+    <flowDefinition>SoClo_Sync_SF_PO_To_QB_PO</flowDefinition>
+    <label>Sync w/ QBO</label>
     <optionsCreateFeedItem>false</optionsCreateFeedItem>
     <type>Flow</type>
 </QuickAction>

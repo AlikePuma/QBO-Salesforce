@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Special_Characters_in_Name</fullName>
+    <active>true</active>
+    <errorConditionFormula>IF(
+    OR(
+							 CONTAINS(Name, &apos;:&apos;), 
+							 CONTAINS(Name, &quot;&apos;&quot;),
+								CONTAINS(Name, &apos;&quot;&apos;)
+				),
+			 TRUE,
+				FALSE
+)</errorConditionFormula>
+    <errorMessage>Name can not contain special characters such as : &apos; &quot;</errorMessage>
+</ValidationRule>

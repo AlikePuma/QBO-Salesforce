@@ -93,6 +93,8 @@
 		<members>Product2.QBO_SyncToken__c</members>
 		<members>Product2.Income_Account__c</members>
 		<members>Product2.Expense_Account__c</members>
+		<members>Product2.Purchase_Product_Service__c</members>
+		<members>Product2.Sell_Product_Service__c</members>
 		<members>Purchase_Order_Item__c.Amount__c</members>
 		<members>Purchase_Order_Item__c.Billable_Status__c</members>
 		<members>Purchase_Order_Item__c.Product__c</members>
@@ -129,13 +131,14 @@
 		<name>Flow</name>
 	</types>
 	<types>
-		<members>Account-SoClo Account</members>
-		<members>Invoice__c-Invoice Layout</members>
-		<members>Product2-SoClo Product</members>
-		<members>Purchase_Order_Item__c-Purchase Order Item Layout</members>
-		<members>Purchase_Order__c-Purchase Order Layout</members>
-		<members>WorkOrder-SoClo Work Order</members>
-		<members>WorkOrderLineItem-SoClo Work Order Line Item</members>
+		<members>Account-SC QBO ccount Layout</members>
+		<members>Invoice__c-SC QBO Invoice Layout</members>
+		<members>Product2-SC QBO Product Layout</members>
+		<members>Purchase_Order_Item__c-SC QBO Purchase Order Item Layout</members>
+		<members>Purchase_Order__c-SC QBO Purchase Order Layout</members>
+		<members>WorkOrder-SC QBO Work Order Layout</members>
+		<members>WorkOrderLineItem-SC QBO Work Order Line Item Layout</members>
+		<members>QBO_Metadata__mdt-QBO Metadata Layout</members>
 		<name>Layout</name>
 	</types>
 	<types>
@@ -149,10 +152,10 @@
 		<name>NamedCredential</name>
 	</types>
 	<types>
-		<members>Account.Sync_With_Quickbooks</members>
-		<members>Invoice__c.Sync_With_Quickbooks</members>
-		<members>Product2.Sync_With_Quickbooks</members>
-		<members>Purchase_Order__c.Sync_With_Quickbooks</members>
+		<members>Account.Sync_w_QBO</members>
+		<members>Invoice__c.Sync_w_QBO</members>
+		<members>Product2.Sync_w_QBO</members>
+		<members>Purchase_Order__c.Sync_w_QBO</members>
 		<members>WorkOrder.Create_Invoice</members>
 		<name>QuickAction</name>
 	</types>
@@ -160,6 +163,12 @@
 		<members>QB_Auth</members>
 		<members>QB_Sandbox</members>
 		<name>RemoteSiteSetting</name>
+	</types>
+	<types>
+		<members>Product2.Expense_Account_not_None</members>
+		<members>Product2.Income_Account_not_None</members>
+		<members>Product2.Special_Characters_in_Name</members>
+		<name>ValidationRule</name>
 	</types>
 	<types>
 		<members>Invoice__c.Create_Update_QB_Invoice</members>

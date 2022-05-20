@@ -3,7 +3,7 @@ public with sharing class QBPOSync_Controller {
     public static void callFromFlow(List<Id> poId){
         Purchase_Order__c po = [SELECT Id,
                                 Name,
-                                (SELECT Id, Name, Product__c,Product__r.QBO_Id__c, Unit_Cost__c, 
+                                (SELECT Id, Name, Amount__c, Product__c,Product__r.QBO_Id__c, Unit_Cost__c, 
                                 Quantity__c, Billable_Status__c,Product__r.Name, Purchase_Order__r.Vendor_Account__r.QBO_Id__c
                                 FROM Purchase_Order_Items__r
                                 ), 
@@ -34,22 +34,23 @@ public with sharing class QBPOSync_Controller {
         QBCallout callout = new QBCallout();
          
         // Check QB for existing PO
-        if(!String.isBlank(po.QBO_Id__c)){
-            QBPOQueryJSON queryJson = callout.getPurchaseOrder(po);
-            
-            //Check if an PO was found
-            if(queryJson.Fault != null){
-                System.debug(queryJson);
-            } else {
+        //if(!String.isBlank(po.QBO_Id__c)){
+        QBPOQueryJSON queryJson = callout.getPurchaseOrder(po);
+        
+        //Check if an PO was found
+        if(queryJson != null){
+            if(queryJson.QueryResponse.PurchaseOrder.size() == 1){
                 po.QBO_Id__c = queryJson.QueryResponse.PurchaseOrder[0].Id;
                 po.QBO_SyncToken__c = queryJson.QueryResponse.PurchaseOrder[0].SyncToken;
+            } else {
+                //Multiple Customer Error Handling
+                throw new ListException(); 
             }
-        } else {
-            QBPOResponseJSON res = callout.createPurchaseOrderCall(po,po.Purchase_Order_Items__r);        
-        
-            po.QBO_Id__c = res.PurchaseOrder.Id;
-            po.QBO_SyncToken__c = res.PurchaseOrder.SyncToken;
         }
+
+        QBPOResponseJSON res = callout.createPurchaseOrderCall(po,po.Purchase_Order_Items__r); 
+        po.QBO_Id__c = res.PurchaseOrder.Id;
+        po.QBO_SyncToken__c = res.PurchaseOrder.SyncToken;
 
         //DML After Callouts
         update po;
