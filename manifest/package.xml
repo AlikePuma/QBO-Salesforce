@@ -95,6 +95,7 @@
 		<members>Product2.Expense_Account__c</members>
 		<members>Product2.Purchase_Product_Service__c</members>
 		<members>Product2.Sell_Product_Service__c</members>
+		<members>Product2.Product2.Preferred_Vendor__c</members>
 		<members>Purchase_Order_Item__c.Amount__c</members>
 		<members>Purchase_Order_Item__c.Billable_Status__c</members>
 		<members>Purchase_Order_Item__c.Product__c</members>
@@ -106,6 +107,7 @@
 		<members>Purchase_Order__c.QBO_SyncToken__c</members>
 		<members>Purchase_Order__c.Vendor_Account__c</members>
 		<members>WorkOrder.Opportunity__c</members>
+		<members>WorkOrder.WorkTypeId</members>
 		<members>WorkOrderLineItem.Unit_Cost__c</members>
 		<name>CustomField</name>
 	</types>
