@@ -89,8 +89,9 @@
 		<members>Invoice__c.Work_Order__c</members>
 
 		<members>Opportunity.Work_Orders_Created__c</members>
-		<members>OpportunityLineItem.Cost_Per_Unit__c</members>
 		<members>Opportunity.Product_Cost__c</members>
+
+		<members>OpportunityLineItem.Cost_Per_Unit__c</members>
 
 		<members>Product2.QBO_Id__c</members>
 		<members>Product2.QBO_SyncToken__c</members>
@@ -190,10 +191,12 @@
 		<members>Product2.Special_Characters_in_Name</members>
 		<name>ValidationRule</name>
 	</types>
+	<!--
 	<types>
 		<members>Invoice__c.Create_Update_QB_Invoice</members>
 		<members>Opportunity.Create_Work_Orders_Line_Items</members>
 		<name>WebLink</name>
 	</types>
+	-->
 	<version>54.0</version>
 </Package>
