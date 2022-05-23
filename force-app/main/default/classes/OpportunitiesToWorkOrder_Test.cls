@@ -22,7 +22,7 @@ public class OpportunitiesToWorkOrder_Test {
         insert o;
         
         // Create product and pricebook entry
-        Product2 prod = new Product2(Name = 'SLA: Bronze', IsActive = true);
+        Product2 prod = new Product2(Name = 'SLA Bronze', IsActive = true);
     	insert prod;
         
         PricebookEntry pbe = new PricebookEntry(UnitPrice = 50.00, Product2Id = prod.Id, Pricebook2Id = Test.getStandardPricebookId(), IsActive = true); 

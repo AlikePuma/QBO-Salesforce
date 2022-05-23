@@ -17,7 +17,7 @@ public with sharing class QBCallOutMock implements HttpCalloutMock {
         
         system.debug('I am in the mock - request endpoint -- ' + req.getEndpoint());
 
-        if (req.getEndpoint().contains('Select+*+from+Customer')) { //getCustomer
+        if (req.getEndpoint().containsIgnoreCase('Select+*+from+Customer')) { //getCustomer
             jsonResponse = '{ '+
                 '   \"QueryResponse\": { '+
                 '   \"Customer\": [ '+
@@ -80,7 +80,7 @@ public with sharing class QBCallOutMock implements HttpCalloutMock {
                 ' \"time\": \"2015-07-23T11:02:25.149-07:00\" '+
             '} ';
         }
-        else if (req.getEndpoint().contains('/customer?')) { //createCustomerCall
+        else if (req.getEndpoint().containsIgnoreCase('/customer?')) { //createCustomerCall
             jsonResponse = '{ '+
                 ' \"Customer\": { '+
                 ' \"domain\": \"QBO\", '+
@@ -133,7 +133,7 @@ public with sharing class QBCallOutMock implements HttpCalloutMock {
                 ' \"time\": \"2015-07-23T10:58:12.099-07:00\" '+
             ' }';  
         }
-        else if (req.getEndpoint().contains('Select+*+from+invoice')) { //getInvoice
+        else if (req.getEndpoint().containsIgnoreCase('Select+*+from+invoice')) { //getInvoice
             jsonResponse = ' { '+
             ' \"QueryResponse\": { '+
               ' \"startPosition\": 1, '+
@@ -237,7 +237,7 @@ public with sharing class QBCallOutMock implements HttpCalloutMock {
             ' \"time\": \"2015-07-24T10:38:50.01-07:00\" '+
            ' } ';
         }
-        else if (req.getEndpoint().contains('/batch')) { //createQbBatchCall
+        else if (req.getEndpoint().containsIgnoreCase('/batch')) { //createQbBatchCall
             jsonResponse = '{'+
                 ' \"BatchItemResponse\": ['+
                 '  {'+
@@ -289,7 +289,7 @@ public with sharing class QBCallOutMock implements HttpCalloutMock {
                 ' \"time\": \"2022-04-28T14:39:17.786-07:00\"'+
             '}';
         }
-        else if (req.getEndpoint().contains('/invoice')) { //createInvoiceFromWorkOrderCall
+        else if (req.getEndpoint().containsIgnoreCase('/invoice')) { //createInvoiceFromWorkOrderCall
             jsonResponse = '{'+
                 '\"Invoice\": {'+
                 '\"TxnDate\": \"2015-07-24\",'+
@@ -409,35 +409,35 @@ public with sharing class QBCallOutMock implements HttpCalloutMock {
             '}';
 
         }
-        else if (req.getEndpoint().contains('Select+*+from+Item')) { //getItem
+        else if (req.getEndpoint().containsIgnoreCase('Select+*+from+Item')) { //getItem
             jsonResponse = '{'+
             '  \"QueryResponse\": {'+
             '    \"startPosition\": 1, '+
-            // '    \"Item\": ['+
-            // '      {'+
-            // '        \"FullyQualifiedName\": \"Concrete\", '+
-            // '        \"domain\": \"QBO\", '+
-            // '        \"Name\": \"Concrete\", '+
-            // '        \"TrackQtyOnHand\": false, '+
-            // '        \"Type\": \"Service\", '+
-            // '        \"PurchaseCost\": 0, '+
-            // '        \"IncomeAccountRef\": {'+
-            // '          \"name\": \"Landscaping Services:Job Materials:Fountains and Garden Lighting\", '+
-            // '          \"value\": \"48\"'+
-            // '        }, '+
-            // '        \"Taxable\": true, '+
-            // '        \"MetaData\": {'+
-            // '          \"CreateTime\": \"2014-09-16T10:36:03-07:00\", '+
-            // '          \"LastUpdatedTime\": \"2014-09-19T12:47:47-07:00\"'+
-            // '        }, '+
-            // '        \"sparse\": false, '+
-            // '        \"Active\": true, '+
-            // '        \"SyncToken\": \"1\", '+
-            // '        \"UnitPrice\": 0, '+
-            // '        \"Id\": \"3\", '+
-            // '        \"Description\": \"Concrete for fountain installation\"'+
-            // '      }, '+
-            // '      {'+
+            '    \"Item\": ['+
+            '      {'+
+            '        \"FullyQualifiedName\": \"Concrete\", '+
+            '        \"domain\": \"QBO\", '+
+            '        \"Name\": \"Concrete\", '+
+            '        \"TrackQtyOnHand\": false, '+
+            '        \"Type\": \"Service\", '+
+            '        \"PurchaseCost\": 0, '+
+            '        \"IncomeAccountRef\": {'+
+            '          \"name\": \"Landscaping Services:Job Materials:Fountains and Garden Lighting\", '+
+            '          \"value\": \"48\"'+
+            '        }, '+
+            '        \"Taxable\": true, '+
+            '        \"MetaData\": {'+
+            '          \"CreateTime\": \"2014-09-16T10:36:03-07:00\", '+
+            '          \"LastUpdatedTime\": \"2014-09-19T12:47:47-07:00\"'+
+            '        }, '+
+            '        \"sparse\": false, '+
+            '        \"Active\": true, '+
+            '        \"SyncToken\": \"1\", '+
+            '        \"UnitPrice\": 0, '+
+            '        \"Id\": \"3\", '+
+            '        \"Description\": \"Concrete for fountain installation\"'+
+            '      } '+
+            // '      ,{'+
             // '        \"FullyQualifiedName\": \"Design\", '+
             // '        \"domain\": \"QBO\", '+
             // '        \"Name\": \"Design\", '+
@@ -460,13 +460,13 @@ public with sharing class QBCallOutMock implements HttpCalloutMock {
             // '        \"Id\": \"4\", '+
             // '        \"Description\": \"Custom Design\"'+
             // '      }'+
-            // '    ], '+
-            '    \"maxResults\": 0'+
+            '    ], '+
+            '    \"maxResults\": 1'+
             '  }, '+
             '  \"time\": \"2015-04-22T11:04:34.194-07:00\"'+
             '}';
         }
-        else if (req.getEndpoint().contains('/item?')) { //createItemCall
+        else if (req.getEndpoint().containsIgnoreCase('/item?')) { //createItemCall
             jsonResponse = '{'+
             ' \"Item\": {'+
             '  \"Name\": \"Product Name 113\",'+
@@ -493,8 +493,222 @@ public with sharing class QBCallOutMock implements HttpCalloutMock {
             ' \"time\": \"2022-04-27T14:39:15.051-07:00\"'+
             '}';
         }
-        else if (req.getEndpoint().contains('@@@')) {
-
+        else if (req.getEndpoint().containsIgnoreCase('Select+*+from+Vendor')) {
+          jsonResponse = '{'+
+          '  \"PrimaryEmailAddr\": {'+
+          '    \"Address\": \"dbradley@myemail.com\"'+
+          '  }, '+
+          '  \"WebAddr\": {'+
+          '    \"URI\": \"http://DiannesAutoShop.com\"'+
+          '  }, '+
+          '  \"PrimaryPhone\": {'+
+          '    \"FreeFormNumber\": \"(650) 555-2342\"'+
+          '  }, '+
+          '  \"DisplayName\": \"Dianne\'s Auto Shop\", '+
+          '  \"Suffix\": \"Sr.\", '+
+          '  \"Title\": \"Ms.\", '+
+          '  \"Mobile\": {'+
+          '    \"FreeFormNumber\": \"(650) 555-2000\"'+
+          '  }, '+
+          '  \"FamilyName\": \"Bradley\", '+
+          '  \"TaxIdentifier\": \"99-5688293\", '+
+          '  \"AcctNum\": \"35372649\", '+
+          '  \"CompanyName\": \"Dianne\'s Auto Shop\", '+
+          '  \"BillAddr\": {'+
+          '    \"City\": \"Millbrae\", '+
+          '    \"Country\": \"U.S.A\", '+
+          '    \"Line3\": \"29834 Mustang Ave.\", '+
+          '    \"Line2\": \"Dianne Bradley\", '+
+          '    \"Line1\": \"Dianne\'s Auto Shop\", '+
+          '    \"PostalCode\": \"94030\", '+
+          '    \"CountrySubDivisionCode\": \"CA\"'+
+          '  }, '+
+          '  \"GivenName\": \"Dianne\", '+
+          '  \"PrintOnCheckName\": \"Dianne\'s Auto Shop\"'+
+          '}';
+        }
+        else if (req.getEndpoint().containsIgnoreCase('/vendor?')) {
+          jsonResponse = '{'+
+          '  \"Vendor\": {'+
+          '    \"domain\": \"QBO\", '+
+          '    \"PrimaryEmailAddr\": {'+
+          '      \"Address\": \"dbradley@myemail.com\"'+
+          '    }, '+
+          '    \"DisplayName\": \"Dianne\'s Auto Shop\", '+
+          '    \"CurrencyRef\": {'+
+          '      \"name\": \"United States Dollar\", '+
+          '      \"value\": \"USD\"'+
+          '    }, '+
+          '    \"GivenName\": \"Dianne\", '+
+          '    \"Title\": \"Ms.\", '+
+          '    \"PrimaryPhone\": {'+
+          '      \"FreeFormNumber\": \"(650) 555-2342\"'+
+          '    }, '+
+          '    \"Active\": true, '+
+          '    \"MetaData\": {'+
+          '      \"CreateTime\": \"2015-07-28T12:51:21-07:00\", '+
+          '      \"LastUpdatedTime\": \"2015-07-28T12:51:21-07:00\"'+
+          '    }, '+
+          '    \"Vendor1099\": false, '+
+          '    \"BillAddr\": {'+
+          '      \"City\": \"Millbrae\", '+
+          '      \"Country\": \"U.S.A\", '+
+          '      \"Line3\": \"29834 Mustang Ave.\", '+
+          '      \"Line2\": \"Dianne Bradley\", '+
+          '      \"Line1\": \"Dianne\'s Auto Shop\", '+
+          '      \"PostalCode\": \"94030\", '+
+          '      \"CountrySubDivisionCode\": \"CA\", '+
+          '      \"Id\": \"423\"'+
+          '    }, '+
+          '    \"Mobile\": {'+
+          '      \"FreeFormNumber\": \"(650) 555-2000\"'+
+          '    }, '+
+          '    \"WebAddr\": {'+
+          '      \"URI\": \"http://DiannesAutoShop.com\"'+
+          '    }, '+
+          '    \"Balance\": 0, '+
+          '    \"SyncToken\": \"0\", '+
+          '    \"Suffix\": \"Sr.\", '+
+          '    \"CompanyName\": \"Dianne\'s Auto Shop\", '+
+          '    \"FamilyName\": \"Bradley\", '+
+          '    \"TaxIdentifier\": \"99-5688293\", '+
+          '    \"AcctNum\": \"35372649\", '+
+          '    \"PrintOnCheckName\": \"Dianne\'s Auto Shop\", '+
+          '    \"sparse\": false, '+
+          '    \"Id\": \"137\"'+
+          '  }, '+
+          '  \"time\": \"2015-07-28T12:51:21.326-07:00\"'+
+          '}';
+        }
+        else if (req.getEndpoint().containsIgnoreCase('Select+*+from+PurchaseOrder')) { //getPurchaseOrder
+          jsonResponse = '{'+
+          '  \"QueryResponse\": {'+
+          '    \"startPosition\": 1, '+
+          '    \"totalCount\": 1, '+
+          '    \"PurchaseOrder\": ['+
+          '      {'+
+          '        \"DocNumber\": \"1007\", '+
+          '        \"SyncToken\": \"0\", '+
+          '        \"domain\": \"QBO\", '+
+          '        \"VendorRef\": {'+
+          '          \"name\": \"Hicks Hardware\", '+
+          '          \"value\": \"41\"'+
+          '        }, '+
+          '        \"TxnDate\": \"2015-07-28\", '+
+          '        \"TotalAmt\": 25.0, '+
+          '        \"APAccountRef\": {'+
+          '          \"name\": \"Accounts Payable (A/P)\", '+
+          '          \"value\": \"33\"'+
+          '        }, '+
+          '        \"sparse\": false, '+
+          '        \"Line\": ['+
+          '          {'+
+          '            \"DetailType\": \"ItemBasedExpenseLineDetail\", '+
+          '            \"Amount\": 25.0, '+
+          '            \"Id\": \"1\", '+
+          '            \"ItemBasedExpenseLineDetail\": {'+
+          '              \"ItemRef\": {'+
+          '                \"name\": \"Garden Supplies\", '+
+          '                \"value\": \"38\"'+
+          '              }, '+
+          '              \"CustomerRef\": {'+
+          '                \"name\": \"Cool Cars\", '+
+          '                \"value\": \"3\"'+
+          '              }, '+
+          '              \"Qty\": 1, '+
+          '              \"TaxCodeRef\": {'+
+          '                \"value\": \"NON\"'+
+          '              }, '+
+          '              \"BillableStatus\": \"NotBillable\", '+
+          '              \"UnitPrice\": 25'+
+          '            }'+
+          '          }'+
+          '        ], '+
+          '        \"CustomField\": ['+
+          '          {'+
+          '            \"DefinitionId\": \"1\", '+
+          '            \"Type\": \"StringType\", '+
+          '            \"Name\": \"Crew #\"'+
+          '          }, '+
+          '          {'+
+          '            \"DefinitionId\": \"2\", '+
+          '            \"Type\": \"StringType\", '+
+          '            \"Name\": \"Sales Rep\"'+
+          '          }'+
+          '        ], '+
+          '        \"Id\": \"259\", '+
+          '        \"MetaData\": {'+
+          '          \"CreateTime\": \"2015-07-28T16:06:03-07:00\", '+
+          '          \"LastUpdatedTime\": \"2015-07-28T16:06:03-07:00\"'+
+          '        }'+
+          '      }'+
+          '    ], '+
+          '    \"maxResults\": 1'+
+          '  }, '+
+          '  \"time\": \"2015-07-28T16:09:26.277-07:00\"'+
+          '}';
+        }
+        else if (req.getEndpoint().containsIgnoreCase('/purchaseorder?')) { // createPurchaseOrderCall
+          jsonResponse = '{'+
+          '  \"PurchaseOrder\": {'+
+          '    \"DocNumber\": \"1007\", '+
+          '    \"SyncToken\": \"0\", '+
+          '    \"domain\": \"QBO\", '+
+          '    \"VendorRef\": {'+
+          '      \"name\": \"Hicks Hardware\", '+
+          '      \"value\": \"41\"'+
+          '    }, '+
+          '    \"TxnDate\": \"2015-07-28\", '+
+          '    \"TotalAmt\": 25.0, '+
+          '    \"APAccountRef\": {'+
+          '      \"name\": \"Accounts Payable (A/P)\", '+
+          '      \"value\": \"33\"'+
+          '    }, '+
+          '    \"EmailStatus\": \"NotSet\", '+
+          '    \"sparse\": false, '+
+          '    \"Line\": ['+
+          '      {'+
+          '        \"DetailType\": \"ItemBasedExpenseLineDetail\", '+
+          '        \"Amount\": 25.0, '+
+          '        \"Id\": \"1\", '+
+          '        \"ItemBasedExpenseLineDetail\": {'+
+          '          \"ItemRef\": {'+
+          '            \"name\": \"Garden Supplies\", '+
+          '            \"value\": \"38\"'+
+          '          }, '+
+          '          \"CustomerRef\": {'+
+          '            \"name\": \"Cool Cars\", '+
+          '            \"value\": \"3\"'+
+          '          }, '+
+          '          \"Qty\": 1, '+
+          '          \"TaxCodeRef\": {'+
+          '            \"value\": \"NON\"'+
+          '          }, '+
+          '          \"BillableStatus\": \"NotBillable\", '+
+          '          \"UnitPrice\": 25'+
+          '        }'+
+          '      }'+
+          '    ], '+
+          '    \"CustomField\": ['+
+          '      {'+
+          '        \"DefinitionId\": \"1\", '+
+          '        \"Type\": \"StringType\", '+
+          '        \"Name\": \"Crew #\"'+
+          '      }, '+
+          '      {'+
+          '        \"DefinitionId\": \"2\", '+
+          '        \"Type\": \"StringType\", '+
+          '        \"Name\": \"Sales Rep\"'+
+          '      }'+
+          '    ], '+
+          '    \"Id\": \"259\", '+
+          '    \"MetaData\": {'+
+          '      \"CreateTime\": \"2015-07-28T16:06:03-07:00\", '+
+          '      \"LastUpdatedTime\": \"2015-07-28T16:06:03-07:00\"'+
+          '    }'+
+          '  }, '+
+          '  \"time\": \"2015-07-28T16:06:04.864-07:00\"'+
+          '}';
         }
 
         system.debug('I AM IN THE MOCK -  ' + jsonResponse);

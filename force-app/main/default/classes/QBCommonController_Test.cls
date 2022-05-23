@@ -6,8 +6,11 @@ public with sharing class QBCommonController_Test {
 
     @testSetup Static void setup() {
 
-        //create common test accounts
+        //create common test account
         Account testAccount = createAccount();
+
+        //create common test vendor account
+        Account testVendorAccount = createVendorAccount();
 
         //create contact for this accout
         Contact testContact = createContact(testAccount.Id);
@@ -30,6 +33,11 @@ public with sharing class QBCommonController_Test {
         //create invoice
         createInvoices(testWO.Id); 
 
+        //create purchase order
+        List<Purchase_Order__c> purchaseOrders = createPurchaseOrder(testVendorAccount.Id);
+
+        //add purchase order line items
+        addPurchaseOrderItems(purchaseOrders, testProducts);
     }
     
     @isTest
@@ -39,6 +47,22 @@ public with sharing class QBCommonController_Test {
         Test.startTest();
         // Get the first test account by using a SOQL query
         Account acct = [SELECT Id FROM Account WHERE Name='Test Account' LIMIT 1];
+        List<Id> accIds = new List<Id>();
+        accIds.add(acct.Id);
+        QBCustomerSync_Controller.callFromFlow(accIds);
+        
+        Test.stopTest();
+
+        System.assert(true);
+    }
+
+    @isTest
+    Static void testQBVendorSync(){
+        
+        Test.setMock(HttpCalloutMock.class, new QBCallOutMock());
+        Test.startTest();
+        // Get the first test account by using a SOQL query
+        Account acct = [SELECT Id FROM Account WHERE Name='Test Vendor Account' LIMIT 1];
         List<Id> accIds = new List<Id>();
         accIds.add(acct.Id);
         QBCustomerSync_Controller.callFromFlow(accIds);
@@ -65,7 +89,7 @@ public with sharing class QBCommonController_Test {
         System.debug('Invoice Id to add in the list is ------' + inv0.Id);
         List<Id> invIds = new List<Id>();
         invIds.add(inv0.Id);
-        QBInvoiceSync_Controller.callFromFlow(invIds);
+        QBInvoice_Controller.callFromFlow(invIds);
         
         Test.stopTest();
 
@@ -112,6 +136,38 @@ public with sharing class QBCommonController_Test {
         System.assert(true);
     }
 
+    @isTest
+    Static void testQBPOQuerySync(){
+        
+        Test.setMock(HttpCalloutMock.class, new QBCallOutMock());
+        Test.startTest();
+        // Get the first test account by using a SOQL query
+        Purchase_Order__c po = [SELECT Id FROM Purchase_Order__c WHERE QBO_Id__c != null LIMIT 1];
+        List<Id> poIds = new List<Id>();
+        poIds.add(po.Id);
+        QBPOSync_Controller.callFromFlow(poIds);
+        
+        Test.stopTest();
+
+        System.assert(true);
+    }
+
+    @isTest
+    Static void testQBPOResponseSync(){
+        
+        Test.setMock(HttpCalloutMock.class, new QBCallOutMock());
+        Test.startTest();
+        // Get the first test account by using a SOQL query
+        Purchase_Order__c po = [SELECT Id FROM Purchase_Order__c WHERE QBO_Id__c = null LIMIT 1];
+        List<Id> poIds = new List<Id>();
+        poIds.add(po.Id);
+        QBPOSync_Controller.callFromFlow(poIds);
+        
+        Test.stopTest();
+
+        System.assert(true);
+    }
+
     private Static Account createAccount() {
         Account testAccount = new Account();
 		testAccount.Name='Test Account' ;
@@ -128,7 +184,30 @@ public with sharing class QBCommonController_Test {
         testAccount.ShippingState = 'FL';
         testAccount.ShippingCountry = 'USA';
         testAccount.ShippingPostalCode = '33417';
+        testAccount.Type = 'Customer';
         
+		insert testAccount;
+        return testAccount;
+    }
+
+    private Static Account createVendorAccount() {
+        Account testAccount = new Account();
+		testAccount.Name='Test Vendor Account' ;
+        testAccount.Phone = '999-999-9999';
+        testAccount.BillingCity = 'Saint Luis';
+        testAccount.BillingStreet = '123 Elm Street';
+        testAccount.BillingCountry = 'USA';
+        testAccount.BillingPostalCode = '63130';
+        testAccount.BillingState = 'MO';
+        testAccount.BillingLatitude = 38.665788;
+        testAccount.BillingLongitude = -90.32224;
+        testAccount.ShippingCity = 'West Palm Beach';
+        testAccount.ShippingStreet = '1234 Elm Street';
+        testAccount.ShippingState = 'FL';
+        testAccount.ShippingCountry = 'USA';
+        testAccount.ShippingPostalCode = '33417';
+        testAccount.Type = 'Vendor';
+
 		insert testAccount;
         return testAccount;
     }
@@ -327,4 +406,44 @@ public with sharing class QBCommonController_Test {
         
     }
 
+    private Static List<Purchase_Order__c> createPurchaseOrder(Id vendorAccId) {
+        
+        List<Purchase_Order__c> pos = new List<Purchase_Order__c>();
+
+        Purchase_Order__c po = new Purchase_Order__c();
+        po.QBO_Id__c = '1';
+        po.QBO_SyncToken__c = '0';
+        po.Vendor_Account__c = vendorAccId;
+        pos.add(po);
+
+        Purchase_Order__c po1 = new Purchase_Order__c();
+        po1.Vendor_Account__c = vendorAccId;
+        pos.add(po1);
+
+        insert pos;
+
+        return pos;
+    }
+
+    private Static void addPurchaseOrderItems(List<Purchase_Order__c> pos, List<Product2> prods) {
+
+        Purchase_Order_Item__c poi = new Purchase_Order_Item__c();
+        List<Purchase_Order_Item__c> pois = new List<Purchase_Order_Item__c>();
+
+        for (Purchase_Order__c po : pos) {
+            for (Product2 prod : prods) {
+                poi = new Purchase_Order_Item__c();
+                poi.Purchase_Order__c = po.Id;
+                poi.Product__c = prod.Id;
+                poi.Quantity__c = 50;
+                poi.Unit_Cost__c = 10;
+                poi.Unit_Type__c = 'Each';
+                poi.Billable_Status__c = 'Has Been Billed';
+                pois.add(poi);
+            }
+        }
+
+        insert pois;
+
+    }
 }

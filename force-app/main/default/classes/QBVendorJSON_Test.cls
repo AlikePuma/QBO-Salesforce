@@ -40,5 +40,8 @@ public class QBVendorJSON_Test {
 		'}';
 		QBVendorJSON obj = QBVendorJSON.parse(json);
 		System.assert(obj != null);
+
+		QBVendorJSON.Vendor objVendor = QBVendorJSON.parseCustomer(json);
+		System.assert(objVendor != null);
 	}
 }
