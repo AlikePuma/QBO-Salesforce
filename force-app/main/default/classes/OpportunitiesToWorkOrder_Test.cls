@@ -2,8 +2,14 @@
 public class OpportunitiesToWorkOrder_Test {
     @testSetup 
     static void setup() {
-        Account acct = new Account();
-        acct.Name = 'Test Account';
+        Account acct = new Account(
+            Name                    = 'Test Account',
+            ShippingStreet          = '2100 Woodward Ave',
+            ShippingCity            = 'Detroit',
+            ShippingState           = 'MI',
+            ShippingPostalCode      = '48201',
+            ShippingCountry         = 'US'
+        );
         insert acct;
         
         
@@ -22,7 +28,7 @@ public class OpportunitiesToWorkOrder_Test {
         insert o;
         
         // Create product and pricebook entry
-        Product2 prod = new Product2(Name = 'SLA: Bronze', IsActive = true);
+        Product2 prod = new Product2(Name = 'SLA Bronze', IsActive = true);
     	insert prod;
         
         PricebookEntry pbe = new PricebookEntry(UnitPrice = 50.00, Product2Id = prod.Id, Pricebook2Id = Test.getStandardPricebookId(), IsActive = true); 
@@ -37,6 +43,20 @@ public class OpportunitiesToWorkOrder_Test {
             Quantity 			= 1
         );
         insert oli;
+
+        // Create operating hours
+        OperatingHours oh = new OperatingHours(
+            Name = 'Base Calendar'
+        );
+        insert oh;
+
+        // Create ServiceTerritory
+        ServiceTerritory st = new ServiceTerritory(
+            Name = 'Default Territory',
+            isActive = true,
+            OperatingHoursId = oh.id
+        );
+        insert st;
     }
     
     @isTest 

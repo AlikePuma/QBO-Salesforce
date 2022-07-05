@@ -112,6 +112,10 @@
 		<members>Purchase_Order__c.QBO_Id__c</members>
 		<members>Purchase_Order__c.QBO_SyncToken__c</members>
 		<members>Purchase_Order__c.Vendor_Account__c</members>
+
+		<members>QBO_Metadata__mdt.Base_Url__c</members>
+		<members>QBO_Metadata__mdt.Company_Id__c</members>
+		<members>QBO_Metadata__mdt.MinorVersion__c</members>
 		
 		<!--
 		<members>WorkOrder.Opportunity__c</members>
@@ -145,8 +149,9 @@
 		<members>SoClo_Sync_SF_PO_To_QB_PO</members>
 		<name>Flow</name>
 	</types>
-	<!--
+	
 	<types>
+		<!--
 		<members>Account-SC QBO ccount Layout</members>
 		<members>Invoice__c-SC QBO Invoice Layout</members>
 		<members>Product2-SC QBO Product Layout</members>
@@ -155,11 +160,11 @@
 
 		<members>WorkOrder-SC QBO Work Order Layout</members>
 		<members>WorkOrderLineItem-SC QBO Work Order Line Item Layout</members>
-		
+		-->
 		<members>QBO_Metadata__mdt-QBO Metadata Layout</members>
 		<name>Layout</name>
 	</types>
-	-->
+	
 	<!-- these need to not override the All list
 	<types>
 		<members>Expenses__c.All</members>

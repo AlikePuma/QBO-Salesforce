@@ -90,6 +90,53 @@ public class QBCallout {
     }
 
 
+    public QBCustomerJSON getSubCustomer(String qboId, String accountName, String jobNumber){
+        System.debug('********** In QBCallout.getSubCustomer()');
+
+        String fullyQualifiedName = accountName + ':' + jobNumber;
+
+        //Initilize query
+        String query;
+        if(!String.isBlank(qboId)){
+            query = 'SELECT+*+FROM+Customer+WHERE+job=True+and+Id=+\'' + qboId + '\'';
+        } else {
+            query = 'SELECT+*+FROM+Customer+WHERE+job=True+and+' +
+                             'FullyQualifiedName=+\'' + fullyQualifiedName.replaceAll(' ', '+') +'\'' ;
+        }
+        
+        String custPath = '/v3/company/'+ QBData.Company_Id__c +'/query?query='+query+'&minorversion='+QBData.minorversion__c;
+        String method = 'GET';
+        String body = null;
+        Map<String,String> headerMap = new Map<String,String>{'Accept' => 'application/json'};
+        HttpRequest req = buildReq(namedCredential,custPath,method,body,headerMap);
+        Http http = new Http();
+        HTTPResponse res = http.send(req); 
+        handleResponseError(res.getBody());
+        QBCustomerJSON json = QBCustomerJSON.parse(res.getBody());
+        System.debug(json);
+
+        return json;
+    }
+
+    public QBCustomerResponseJSON createSubCustomerCall(WorkOrder wo){
+        System.debug('********** In QBCallout.createSubCustomerCall()');
+
+        //Map acc data to QB Customer JSON
+        String body = QBMap.mapWorkOrderToSubCustomer(wo);
+
+        String custPath = '/v3/company/'+ QBData.Company_Id__c + '/customer?minorversion=' + QBData.minorversion__c;
+        String method = 'POST';
+        Map<String,String> headerMap = new Map<String,String>{'Accept' => 'application/json', 'Content-Type' => 'application/json'};            
+        HttpRequest req = buildReq(namedCredential,custPath,method,body,headerMap);
+        Http http = new Http();
+        HTTPResponse res = http.send(req); 
+        handleResponseError(res.getBody());
+        QBCustomerResponseJSON json = QBCustomerResponseJSON.parse(res.getBody());
+
+        return json;
+    }
+
+
     public QBInvoiceQueryJSON getInvoice(Invoice__c inv){
         System.debug('********** In QBCallout.getInvoice()');
 
@@ -120,7 +167,7 @@ public class QBCallout {
      * @param inv The invoice that is needed to create an invoice in QBO
      * @return Response object     
      */
-    public QBInvoiceResponseJSON createInvoiceFromWorkOrderCall(Invoice__c inv, List<WorkOrderLineItem> woliList){
+    public QBInvoiceResponseJSON createInvoiceFromWorkOrderCall(Invoice__c inv, WorkOrder wo, List<WorkOrderLineItem> woliList){
         System.debug('********** In QBCallout.createInvoiceFromWorkOrderCall()');
         
         String apiCall = 'invoice';
@@ -128,7 +175,7 @@ public class QBCallout {
 
 
         //Map inv data to QB Invoice JSON
-        String body = QBMap.mapInvoice(inv, woliList);
+        String body = QBMap.mapInvoice(inv, wo, woliList);
         String custPath = '/v3/company/'+ QBData.Company_Id__c + '/' + apiCall + '?minorversion=' + QBData.minorversion__c;
         Map<String,String> headerMap = new Map<String,String>{'Accept' => 'application/json', 'Content-Type' => 'application/json'};
         
@@ -302,7 +349,7 @@ public class QBCallout {
      * Throws exception if there is an error in the callout
      * @param body The json response from the QB callout
      */
-    private void handleResponseError(String body){
+    public void handleResponseError(String body){
         QBOErrorJSON error = QBOErrorJSON.parse(body);
         if(error != null){
             if(error.Fault != null && error.Fault.Error != null && error.Fault.Error.size() > 0){
