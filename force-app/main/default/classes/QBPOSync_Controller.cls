@@ -26,7 +26,10 @@ public with sharing class QBPOSync_Controller {
                                 Vendor_Account__r.BillingPostalCode,
                                 Vendor_Account__r.BillingState,
                                 Vendor_Account__r.BillingLatitude,
-                                Vendor_Account__r.BillingLongitude
+                                Vendor_Account__r.BillingLongitude,
+                                Work_Order__c,
+                                Work_Order__r.Job_Number__c,
+                                Work_Order__r.QBO_Id__c
                             FROM Purchase_Order__c 
                             WHERE Id =: poId[0]];
     
@@ -47,7 +50,8 @@ public with sharing class QBPOSync_Controller {
                 throw new ListException(); 
             }
         }
-
+        
+        // Either way, outbound sync QBO to SF
         QBPOResponseJSON res = callout.createPurchaseOrderCall(po,po.Purchase_Order_Items__r); 
         po.QBO_Id__c = res.PurchaseOrder.Id;
         po.QBO_SyncToken__c = res.PurchaseOrder.SyncToken;

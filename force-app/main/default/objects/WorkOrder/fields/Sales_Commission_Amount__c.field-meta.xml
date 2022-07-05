@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sales_Commission_Amount__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( Profit_Margin__c &lt; 0.2333,  Profit_Margin__c *  Total_Profit__c , 0.3333 * Total_Profit__c  )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>IF( Profit_Margin__c &lt; 23.33, Profit_Margin__c * Total_Profit__c , 0.3333 * Total_Profit__c )</inlineHelpText>
+    <label>Sales Commission Amount</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <type>Currency</type>
+</CustomField>

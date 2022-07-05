@@ -69,7 +69,7 @@ public with sharing class QBCustomerSync_Controller {
         QBVendorJSON accountData = callout.getVendor(acc);
        
         //Check if a vendor was found
-        if(accountData.QueryResponse.Vendor != null){
+        if(accountData.QueryResponse != null && accountData.QueryResponse.Vendor != null){
             
             //Check if only 1 vendor was found
             if(accountData.QueryResponse.Vendor.size() == 1){

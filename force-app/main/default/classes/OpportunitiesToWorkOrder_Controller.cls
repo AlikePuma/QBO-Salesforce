@@ -41,15 +41,37 @@ public class OpportunitiesToWorkOrder_Controller {
                 oliTempList.add(oli);
                 oppLineItemsMap.put(oli.OpportunityId, oliTempList);
             }
-            
+
+
             // Create WOs for each opp
             for(Opportunity o : selectedOpps){
+                // Set Pricebook to Standard if one's not set on Opportunity
+                String defaultPricebook; 
+                if(String.isBlank(o.Pricebook2Id)){
+                    defaultPricebook = [SELECT Id FROM Pricebook2 WHERE Name = 'Standard Price Book' AND IsStandard = true AND isActive = true LIMIT 1].Id;
+                } else {
+                    defaultPricebook = o.Pricebook2Id;
+                }
+
+                // Set Territory to default 
+                String territory = [SELECT Id FROM ServiceTerritory WHERE Name = 'Default Territory' AND isActive = true LIMIT 1].Id;
+
+                Address addr = [SELECT ShippingAddress FROM Account WHERE Id = :o.AccountId].ShippingAddress;
+
                 WorkOrder wo = new WorkOrder(
                     AccountId 		= o.AccountId,
                     Description 	= o.Description,
                     Opportunity__c 	= o.Id,
-                    Pricebook2Id 	= o.Pricebook2Id,
-                    Subject 		= o.Name
+                    Pricebook2Id 	= defaultPricebook,
+                    Subject 		= o.Name,
+
+                    Street          = addr.Street,
+                    City            = addr.City,
+                    State           = addr.State,
+                    PostalCode      = addr.PostalCode,
+                    Country         = addr.Country,
+
+                    ServiceTerritoryId = territory
                 );
                 
                 o.Work_Orders_Created__c = true;

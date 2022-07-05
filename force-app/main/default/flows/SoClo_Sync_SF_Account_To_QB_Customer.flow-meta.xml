@@ -4,7 +4,7 @@
         <name>Call_Controller</name>
         <label>Call Controller</label>
         <locationX>182</locationX>
-        <locationY>278</locationY>
+        <locationY>398</locationY>
         <actionName>QBCustomerSync_Controller</actionName>
         <actionType>apex</actionType>
         <connector>
@@ -23,10 +23,43 @@
     </actionCalls>
     <apiVersion>54.0</apiVersion>
     <decisions>
+        <description>Vendor or Customer</description>
+        <name>Account_is_Correct_Type_0</name>
+        <label>Account is Correct Type?</label>
+        <locationX>512</locationX>
+        <locationY>278</locationY>
+        <defaultConnector>
+            <targetReference>Error_0_0</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Is_Vendor_or_Customer_0</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Account_Record.Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Customer</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Account_Record.Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Vendor</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Call_Controller</targetReference>
+            </connector>
+            <label>Is Vendor or Customer</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>Does_This_Customer_Exist_In_Quickbooks</name>
         <label>Does This Customer Exist In Quickbooks?</label>
         <locationX>182</locationX>
-        <locationY>398</locationY>
+        <locationY>518</locationY>
         <defaultConnector>
             <targetReference>Customer_Created</targetReference>
         </defaultConnector>
@@ -54,13 +87,14 @@
             <label>Yes</label>
         </rules>
     </decisions>
+    <description>Custom or Vendor</description>
     <formulas>
         <name>CustomerOrVendor</name>
         <dataType>String</dataType>
         <expression>TEXT({!Get_Account_Record.Type})</expression>
     </formulas>
-    <interviewLabel>SoClo Sync SF Account To QB Customer {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>SoClo Sync SF Account To QB Customer</label>
+    <interviewLabel>SoClo Sync SF Account To QB {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>SoClo Sync SF Account To QB</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -83,11 +117,11 @@
     <recordLookups>
         <name>Get_Account_Record</name>
         <label>Get Account Record</label>
-        <locationX>182</locationX>
+        <locationX>512</locationX>
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Call_Controller</targetReference>
+            <targetReference>Account_is_Correct_Type_0</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -105,7 +139,7 @@
         <name>Customer_Created</name>
         <label>Customer Created</label>
         <locationX>314</locationX>
-        <locationY>518</locationY>
+        <locationY>638</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -121,7 +155,7 @@
         <name>Customer_Updated</name>
         <label>Customer Updated</label>
         <locationX>50</locationX>
-        <locationY>518</locationY>
+        <locationY>638</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -137,20 +171,36 @@
         <name>Error</name>
         <label>Error</label>
         <locationX>578</locationX>
-        <locationY>398</locationY>
+        <locationY>518</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <fields>
             <name>txt_2</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;img src=&quot;https://media.istockphoto.com/photos/cute-kitten-portrait-british-shorthair-cat-picture-id916159418?k=20&amp;amp;m=916159418&amp;amp;s=612x612&amp;amp;w=0&amp;amp;h=rHUiHZGWTjqPyO7ArbEHWUpezE5u46ncxDCH24Vrj9M=&quot;&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;strong style=&quot;font-size: 16px; color: rgb(255, 0, 0);&quot;&gt;Error&lt;/strong&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;em style=&quot;font-size: 14px;&quot;&gt;Please share the message below with your system administrator&lt;/em&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;Error Message : {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;b style=&quot;color: rgb(255, 0, 0); font-size: 16px;&quot;&gt;Error&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;i style=&quot;font-size: 14px;&quot;&gt;Please share the message below with your system administrator&lt;/i&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;Error Message : {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Error_0_0</name>
+        <label>Error</label>
+        <locationX>842</locationX>
+        <locationY>398</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>txt_2_0_0</name>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;b style=&quot;font-size: 16px; color: rgb(255, 0, 0);&quot;&gt;Error&lt;/b&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;text-align: center;&quot;&gt;This record must be either a Customer or a Vendor Type&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>56</locationX>
+        <locationX>386</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Account_Record</targetReference>

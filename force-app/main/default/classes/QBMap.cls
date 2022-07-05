@@ -25,7 +25,7 @@ public class QBMap {
         shipAddy.Country = acc.ShippingCountry;
         customer.ShipAddr = shipAddy;
 
-        customer.PrintOnCheckName = acc.Name;
+        customer.PrintOnCheckName = acc.Name; 
         //Create Primary Phone
         QBCustomerJSON.PrimaryPhone phone = new QBCustomerJSON.PrimaryPhone ();
         phone.FreeFormNumber = acc.Phone;
@@ -48,6 +48,42 @@ public class QBMap {
         customer.BillAddr = billAddy;
 
         customer.Active = True;
+
+        return JSON.serialize(customer, True).replace('"Long_x":', '"Long":');
+    }
+
+    /**
+     * Map the SF Account data to the QB customer JSON
+     * @param wo The work order 
+     * @return the QB json that can be used to CRUD a customer in QBO
+     */
+    public static String mapWorkOrderToSubCustomer(WorkOrder wo){
+        System.debug('********** In QBMap.mapWorkOrderToSubCustomer');
+
+        /*
+        {
+            "FullyQualifiedName": "TestJob",
+            "DisplayName": "TestJob",
+            "Active": true,
+            "BillWithParent": true,
+            "ParentRef": {
+                "value": 68 // account QBO
+            },
+        } 
+        */
+
+        QBCustomerJSON.Customer customer = new QBCustomerJSON.Customer();
+        customer.FullyQualifiedName = wo.Job_number__c;
+        customer.DisplayName = wo.Job_number__c;
+        customer.Job = true;
+        customer.Active = true;
+        customer.BillWithParent = true;
+        
+        QBCustomerJSON.ParentRef parentRef = new QBCustomerJSON.ParentRef();
+        parentRef.value = wo.Customer_Account__r.QBO_Id__c;
+
+        customer.ParentRef = parentRef;
+        //customer.IsProject = False;
 
         return JSON.serialize(customer, True).replace('"Long_x":', '"Long":');
     }
@@ -95,7 +131,7 @@ public class QBMap {
      * @param inv The invoice that is used for the mapping
      * @return The json String that is used for the body of the request callout 
      */
-    public static String mapInvoice(Invoice__c inv, List<WorkOrderLineItem> woliList){
+    public static String mapInvoice(Invoice__c inv, WorkOrder wo, List<WorkOrderLineItem> woliList){
         System.debug('********** In QBMap.mapInvoice');
 
         //////////////////////////
@@ -110,18 +146,23 @@ public class QBMap {
         
         invoiceObj.AllowOnlineACHPayment = True;
         invoiceObj.AllowOnlineCreditCardPayment = True;
-        String invNumber = inv.name.replace('INV-', '');
-        invoiceObj.DocNumber  = invNumber;
+        invoiceObj.DocNumber  = inv.name.replace('INV-', '');
         invoiceObj.EmailStatus = 'NotSet';
         QBInvoiceJSON.EmailAddress email = new QBInvoiceJSON.EmailAddress();
-        email.Address = inv.Work_Order__r.Account.contact__r.email;
+        email.Address = inv.Work_Order__r.Customer_Account__r.contact__r.email;
         invoiceObj.BillEmail = email;
 
-        //*****  CUSTOMER REFERENCE  *****//
+        //*****  CUSTOMER / JOB REFERENCE  *****//
         QBInvoiceJSON.CustomerRef customerRef = new QBInvoiceJSON.CustomerRef();
-        customerRef.value = inv.Work_Order__r.Account.QBO_Id__c;
+        String customerOrJob;
+        if(inv.Sync_in_QBO_to__c == 'Job'){ //job is synced, sync to job
+            customerOrJob = wo.QBO_Id__c;
+        } else {  // sync to customer account
+            customerOrJob = inv.Work_Order__r.Customer_Account__r.QBO_Id__c;
+        }
+        customerRef.value = customerOrJob;
         invoiceObj.CustomerRef = customerRef;
-        
+                
         //*****  MEMO  *****//
         QBInvoiceJSON.MemoRef memo = new QBInvoiceJSON.MemoRef();
         memo.value = inv.Description__c;
@@ -131,54 +172,44 @@ public class QBMap {
         QBInvoiceJSON.SalesTermRef sales = new QBInvoiceJSON.SalesTermRef();
         //these values are different for each QB org
         sales.value = inv.Terms__c;
-        Integer daysToAddToDueDate = 0;
-        if(inv.Terms__c == 'Due on receipt'){
-            daysToAddToDueDate = 0;
-        }else if(inv.Terms__c == 'Net 15'){
-            daysToAddToDueDate = 15;
-        }else if(inv.Terms__c == 'Net 30'){
-            daysToAddToDueDate = 30;
-        }else if(inv.Terms__c == 'Net 60'){
-            daysToAddToDueDate = 60;
-        }else{
-            daysToAddToDueDate = 0;
-        }
-        invoiceObj.DueDate = Date.today().addDays(daysToAddToDueDate);
         invoiceObj.SalesTermRef = sales;
+        // The following may be used to set a due date without terms
+        //invoiceObj.DueDate = Date.today().addDays(daysToAddToDueDate);
+        
         
         //*****  BILLING ADDRESS  *****//
         QBInvoiceJSON.BillAddr billAddy = new QBInvoiceJSON.BillAddr();
-        billAddy.City = inv.Work_Order__r.Account.BillingCity;
-        billAddy.Line1 = inv.Work_Order__r.Account.Name;
-        billAddy.Line2 = inv.Work_Order__r.Account.BillingStreet;
-        billAddy.CountrySubDivisionCode = inv.Work_Order__r.Account.BillingState;
-        billAddy.PostalCode = inv.Work_Order__r.Account.BillingPostalCode;
-        billAddy.Country = inv.Work_Order__r.Account.BillingCountry;
+        billAddy.City = inv.Work_Order__r.Customer_Account__r.BillingCity;
+        billAddy.Line1 = inv.Work_Order__r.Customer_Account__r.Name;
+        billAddy.Line2 = inv.Work_Order__r.Customer_Account__r.BillingStreet;
+        billAddy.CountrySubDivisionCode = inv.Work_Order__r.Customer_Account__r.BillingState;
+        billAddy.PostalCode = inv.Work_Order__r.Customer_Account__r.BillingPostalCode;
+        billAddy.Country = inv.Work_Order__r.Customer_Account__r.BillingCountry;
         invoiceObj.BillAddr = billAddy;
 
         //*****  SHIPPING ADDRESS  *****//
         QBInvoiceJSON.BillAddr shipAddy = new QBInvoiceJSON.BillAddr();
-        if(inv.Work_Order__r.Account != null){
+        if(inv.Work_Order__r.Customer_Account__r != null){
             String phone = '';
             String cName = '';
 
-            if(inv.Work_Order__r.Account.Contact__c != null){
+            if(inv.Work_Order__r.Customer_Account__r.Contact__c != null){
                 cName = inv.Work_Order__r.Account.Contact__r.Name;
             } else {
                 cName = 'ATTN: Billing';
             }
             String contactLine = cName + phone;
 
-            shipAddy.Line1 = inv.Work_Order__r.Account.Name;
+            shipAddy.Line1 = inv.Work_Order__r.Customer_Account__r.Name;
             shipAddy.Line2 = contactLine;
-            shipAddy.Line3 = inv.Work_Order__r.Account.ShippingStreet;
-            shipAddy.Line4 = inv.Work_Order__r.Account.ShippingCity + ', '+ 
-                               inv.Work_Order__r.Account.ShippingState + '  ' +
-                               inv.Work_Order__r.Account.ShippingPostalCode;
-            shipAddy.Line5 = inv.Work_Order__r.Account.ShippingCountry;
+            shipAddy.Line3 = inv.Work_Order__r.Customer_Account__r.ShippingStreet;
+            shipAddy.Line4 = inv.Work_Order__r.Customer_Account__r.ShippingCity + ', '+ 
+                               inv.Work_Order__r.Customer_Account__r.ShippingState + '  ' +
+                               inv.Work_Order__r.Customer_Account__r.ShippingPostalCode;
+            shipAddy.Line5 = inv.Work_Order__r.Customer_Account__r.ShippingCountry;
 
-            shipAddy.Lat = String.valueOf(inv.Work_Order__r.Account.ShippingLatitude);
-            shipAddy.Long_x = String.valueOf(inv.Work_Order__r.Account.ShippingLongitude);
+            shipAddy.Lat = String.valueOf(inv.Work_Order__r.Customer_Account__r.ShippingLatitude);
+            shipAddy.Long_x = String.valueOf(inv.Work_Order__r.Customer_Account__r.ShippingLongitude);
             invoiceObj.ShipAddr = shipAddy;
         }
 
@@ -221,8 +252,6 @@ public class QBMap {
             System.debug('Amount: ' + Line.Amount);
             line.Description    = woli.PricebookEntry.Product2.Family;
             line.DetailType = 'SalesItemLineDetail';
-
-
 
             lineItems.add(line);
             System.debug('Line : ' + line);
@@ -355,8 +384,9 @@ public class QBMap {
 
             // Customer Reference
             QBPOJSON.ItemRef customerRef = new QBPOJSON.ItemRef();
-            customerRef.value = poli.Purchase_Order__r.Vendor_Account__r.QBO_Id__c;
-            //ItemBasedExpenseLineDetail.CustomerRef = customerRef;  //NOTE: currently not being added to object
+            //customerRef.value = poli.Purchase_Order__r.Vendor_Account__r.QBO_Id__c;
+            customerRef.value = po.Work_Order__r.QBO_Id__c;
+            ItemBasedExpenseLineDetail.CustomerRef = customerRef;  //NOTE: currently not being added to object
 
             // Tax Code Reference
             QBPOJSON.TaxCodeRef taxCodeRef = new QBPOJSON.TaxCodeRef();

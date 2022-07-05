@@ -36,7 +36,6 @@ public class QBPOJSON {
 		public String name;
 		public String value;
 	}
-	
 	public class POEmail {
 		public String Address;
 	}

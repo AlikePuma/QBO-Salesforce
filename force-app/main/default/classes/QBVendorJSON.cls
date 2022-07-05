@@ -28,34 +28,34 @@ public class QBVendorJSON {
 	}
 
 	public class Vendor {
-		public Boolean Vendor1099 {get;set;} 
-		public String domain {get;set;} 
-		public String DisplayName {get;set;} 
-		public String SyncToken {get;set;} 
-		public String PrintOnCheckName {get;set;} 
-		public Boolean sparse {get;set;} 
-		public Boolean Active {get;set;} 
-		public Double Balance {get;set;} 
-		public String Id {get;set;} 
-		public MetaData MetaData {get;set;} 
-		public BillAddr BillAddr {get;set;} 
-		public String CompanyName {get;set;} 
-		public TermRef TermRef {get;set;} 
-		public PrimaryPhone PrimaryPhone {get;set;} 
-		public String GivenName {get;set;} 
-		public PrimaryPhone Mobile {get;set;} 
-		public String FamilyName {get;set;} 
-		public String TaxIdentifier {get;set;} 
-		public String AcctNum {get;set;} 
-		public WebAddr WebAddr {get;set;} 
-		public PrimaryEmailAddr PrimaryEmailAddr {get;set;} 
+		public Boolean Vendor1099;
+		public String domain;
+		public String DisplayName;
+		public String SyncToken;
+		public String PrintOnCheckName;
+		public Boolean sparse;
+		public Boolean Active;
+		public Double Balance;
+		public String Id;
+		public MetaData MetaData;
+		public BillAddr BillAddr;
+		public String CompanyName;
+		public TermRef TermRef;
+		public PrimaryPhone PrimaryPhone;
+		public String GivenName;
+		public PrimaryPhone Mobile;
+		public String FamilyName;
+		public String TaxIdentifier;
+		public String AcctNum;
+		public WebAddr WebAddr;
+		public PrimaryEmailAddr PrimaryEmailAddr;
 
 	}
 	public class TermRef {
-		public String value {get;set;} 
+		public String value;
 	}
 	public class WebAddr {
-		public String URI {get;set;} 
+		public String URI;
 	}
 	public class MetaData {
 		public String CreateTime;

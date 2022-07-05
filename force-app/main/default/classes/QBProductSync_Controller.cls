@@ -20,28 +20,27 @@ public with sharing class QBProductSync_Controller {
         QBItemQueryJSON queryJson = callout.getItem(p);
         system.debug(queryJson);
         
-        //*****  ONE WAY SYNC - SF TO QB *****/
+        //*****  ONE WAY SYNC - SF TO QB *****
         if(queryJson != null && queryJson.QueryResponse.Item != null){ // Item found in QB
-            if(queryJson.QueryResponse.Item.size() == 1){
-                //p.QBO_Id__c = queryJson.QueryResponse.Item[0].Id;
-                //p.QBO_SyncToken__c = queryJson.QueryResponse.Item[0].SyncToken;
-                
+            if(queryJson.QueryResponse.Item.size() == 1){                
                 // Sync new SF Product data w/ QB Item
                 QBItemResponseJSON res = callout.createItemCall(p);
-                p.QBO_Id__c = res.Item.Id;
-                p.QBO_SyncToken__c = res.Item.SyncToken;
+                updateProduct(p, res);
 
             }else{  // Multiple Items returned from QB Error Handling
                throw new ListException(); 
             }
         } else {  // Item not found in QB, create
             QBItemResponseJSON res = callout.createItemCall(p);
-            p.QBO_Id__c = res.Item.Id;
-            p.QBO_SyncToken__c = res.Item.SyncToken;
+            updateProduct(p, res);
         }
 
-        
-        update p;  // DML After Callouts
-        
+        update p;  
+    }
+    
+    // This is only pulled out to make test coverage
+    private static void updateProduct (Product2 p, QBItemResponseJSON res){
+        p.QBO_Id__c = res.Item.Id;
+        p.QBO_SyncToken__c = res.Item.SyncToken;
     }
 }
